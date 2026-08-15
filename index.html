@@ -108,28 +108,36 @@ header .marque span{font-size:.62rem;letter-spacing:.42em;text-transform:upperca
 @keyframes descend{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(10px);opacity:1}}
 /* ---------- En situation ---------- */
 .bande-situation{
-  padding:40px 24px 6px;max-width:1000px;margin:0 auto;
+  padding:50px 24px 60px;max-width:1000px;margin:0 auto;
   background:var(--creme);
 }
 .bande-situation .bande-label{
   text-align:center;color:var(--or);letter-spacing:.3em;text-transform:uppercase;
   font-size:.7rem;margin-bottom:18px;
 }
-.bande-situation .bande-grille{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+.carrousel-bas{
+  position:relative;margin:0 auto;
+  width:min(380px,86vw);aspect-ratio:3/4;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(61,52,39,.20);
+  background:var(--creme-fonce);
 }
-.bande-situation figure{
-  border-radius:12px;overflow:hidden;aspect-ratio:3/4;
-  box-shadow:0 10px 26px rgba(61,52,39,.16);
+.carrousel-bas img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transform:scale(1.06);
+  transition:opacity 1.1s ease,transform 6s ease;
 }
-.bande-situation img{width:100%;height:100%;object-fit:cover;display:block}
-.bande-situation .fleche{
-  text-align:center;margin:26px 0 0;color:var(--or);font-size:1.4rem;
-  animation:descend 1.8s ease-in-out infinite;
+.carrousel-bas img.actif{opacity:1;transform:scale(1)}
+.carrousel-bas .points{
+  position:absolute;bottom:14px;left:0;right:0;z-index:5;
+  display:flex;justify-content:center;gap:9px;
 }
-@media(max-width:640px){
-  .bande-situation .bande-grille{grid-template-columns:repeat(2,1fr);gap:10px}
+.carrousel-bas .point{
+  width:9px;height:9px;border-radius:50%;cursor:pointer;
+  background:rgba(255,253,248,.55);border:1px solid rgba(61,52,39,.25);
+  transition:transform .3s,background .3s;
 }
+.carrousel-bas .point.actif{background:var(--or);transform:scale(1.35)}
 /* ---------- Produit ---------- */
 .produit{
   display:grid;grid-template-columns:1fr 1fr;gap:60px;
@@ -351,24 +359,15 @@ footer .copy{margin-top:30px;font-size:.75rem;color:rgba(245,239,228,.45)}
   <div class="carrousel" id="carrousel">
     <img src="ambiance-helicoptere.webp" class="actif" alt="Maison Jasna — livraison en hélicoptère">
     <img src="ambiance-sacs-voiture.webp" alt="Sacs Maison Jasna dans une voiture vintage">
+    <img src="ambiance-parachutes.webp" alt="Maison Jasna — livraison par parachutes">
+    <img src="ambiance-papier.webp" alt="Maison Jasna — papier d'emballage de la maison">
+    <img src="ambiance-chariot.webp" alt="Maison Jasna — chariot à bagages">
     <div class="points" id="points"></div>
   </div>
   <h2>Claquettes Jasna — Oran</h2>
   <div class="filet"></div>
   <p>L'icône intemporelle de l'élégance parisienne. Cuir souple, découpe « H » signature, disponible en six coloris d'exception.</p>
   <a href="#produit" class="cta">Découvrir</a>
-</section>
-
-<!-- EN SITUATION -->
-<section class="bande-situation">
-  <div class="bande-label">En situation</div>
-  <div class="bande-grille">
-    <figure><img src="ambiance-corail.webp" alt="Claquette Jasna corail au bord de la piscine" loading="lazy"></figure>
-    <figure><img src="ambiance-jaune.webp" alt="Claquette Jasna jaune en terrasse" loading="lazy"></figure>
-    <figure><img src="ambiance-bordeaux.webp" alt="Claquette Jasna bordeaux dans un escalier" loading="lazy"></figure>
-    <figure><img src="ambiance-bleu.webp" alt="Claquette Jasna bleue dans la rue" loading="lazy"></figure>
-  </div>
-  <div class="fleche">▼</div>
 </section>
 
 <!-- PRODUIT (détail de l'article sélectionné) -->
@@ -416,6 +415,18 @@ footer .copy{margin-top:30px;font-size:.75rem;color:rgba(245,239,228,.45)}
     <div class="atout reveal"><div class="ico">🎁</div><h4>Coffret complet</h4><p>Chaque article est livré soigneusement emballé, prêt à offrir.</p></div>
     <div class="atout reveal"><div class="ico">📞</div><h4>Confirmation rapide</h4><p>Après votre commande, nous vous rappelons pour tout confirmer.</p></div>
     <div class="atout reveal"><div class="ico">🎨</div><h4>Plusieurs coloris</h4><p>Chaque modèle existe en plusieurs teintes : à chacune son style.</p></div>
+  </div>
+</section>
+
+<!-- EN SITUATION (carrousel automatique) -->
+<section class="bande-situation">
+  <div class="bande-label">En situation</div>
+  <div class="carrousel-bas" id="carrousel-bas">
+    <img src="situation-roses1.webp" class="actif" alt="Maison Jasna — en situation">
+    <img src="situation-roses2.webp" alt="Maison Jasna — en situation">
+    <img src="situation-roses3.webp" alt="Maison Jasna — en situation">
+    <img src="situation-tiktok.webp" alt="Maison Jasna — en situation">
+    <div class="points" id="points-bas"></div>
   </div>
 </section>
 
@@ -755,42 +766,46 @@ btnEnvoyer.addEventListener('click', async () => {
   btnEnvoyer.textContent = 'Envoyer';
 });
 
-// ===== Carrousel d'ambiance (défilement automatique) =====
-const diapos = document.querySelectorAll('#carrousel > img');
-const pointsBox = $('points');
-let diapoActive = 0;
-let carrouselTimer = null;
+// ===== Carrousels d'ambiance (défilement automatique) =====
+function initCarrousel(idCarrousel, idPoints){
+  const carrousel = document.getElementById(idCarrousel);
+  const pointsBox = document.getElementById(idPoints);
+  const diapos = carrousel.querySelectorAll(':scope > img');
+  let diapoActive = 0;
+  let timer = null;
 
-diapos.forEach((img, i) => {
-  const pt = document.createElement('div');
-  pt.className = 'point' + (i === 0 ? ' actif' : '');
-  pt.addEventListener('click', () => { allerDiapo(i); relancerCarrousel(); });
-  pointsBox.appendChild(pt);
-});
-const points = pointsBox.querySelectorAll('.point');
+  diapos.forEach((img, i) => {
+    const pt = document.createElement('div');
+    pt.className = 'point' + (i === 0 ? ' actif' : '');
+    pt.addEventListener('click', () => { allerDiapo(i); relancer(); });
+    pointsBox.appendChild(pt);
+  });
+  const points = pointsBox.querySelectorAll('.point');
 
-function allerDiapo(i){
-  diapos[diapoActive].classList.remove('actif');
-  points[diapoActive].classList.remove('actif');
-  diapoActive = (i + diapos.length) % diapos.length;
-  diapos[diapoActive].classList.add('actif');
-  points[diapoActive].classList.add('actif');
+  function allerDiapo(i){
+    diapos[diapoActive].classList.remove('actif');
+    points[diapoActive].classList.remove('actif');
+    diapoActive = (i + diapos.length) % diapos.length;
+    diapos[diapoActive].classList.add('actif');
+    points[diapoActive].classList.add('actif');
+  }
+  function relancer(){
+    clearInterval(timer);
+    timer = setInterval(() => allerDiapo(diapoActive + 1), 3500);
+  }
+  relancer();
+
+  let departX = null;
+  carrousel.addEventListener('touchstart', e => departX = e.touches[0].clientX, {passive:true});
+  carrousel.addEventListener('touchend', e => {
+    if (departX === null) return;
+    const delta = e.changedTouches[0].clientX - departX;
+    if (Math.abs(delta) > 40){ allerDiapo(diapoActive + (delta < 0 ? 1 : -1)); relancer(); }
+    departX = null;
+  }, {passive:true});
 }
-function relancerCarrousel(){
-  clearInterval(carrouselTimer);
-  carrouselTimer = setInterval(() => allerDiapo(diapoActive + 1), 3500);
-}
-relancerCarrousel();
-
-let departX = null;
-const carrousel = $('carrousel');
-carrousel.addEventListener('touchstart', e => departX = e.touches[0].clientX, {passive:true});
-carrousel.addEventListener('touchend', e => {
-  if (departX === null) return;
-  const delta = e.changedTouches[0].clientX - departX;
-  if (Math.abs(delta) > 40){ allerDiapo(diapoActive + (delta < 0 ? 1 : -1)); relancerCarrousel(); }
-  departX = null;
-}, {passive:true});
+initCarrousel('carrousel', 'points');
+initCarrousel('carrousel-bas', 'points-bas');
 
 // ===== Lightbox =====
 const lightbox = $('lightbox');
