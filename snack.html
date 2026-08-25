@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Système de commande Snack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#1c1a17;
+  --noir2:#26231f;
+  --creme:#faf5ec;
+  --creme2:#f1e9db;
+  --orange:#e8590c;
+  --orange2:#ff8b3d;
+  --vert:#2f9e44;
+  --rouge:#c0392b;
+  --gris:#8a8378;
+  --blanc:#fffdf8;
+  --ombre:0 10px 30px rgba(28,26,23,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  background:var(--creme);color:var(--noir);
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:1rem}
+.titre-display{font-family:'Bebas Neue','Poppins',sans-serif;letter-spacing:.06em}
+
+/* ============ INTRO / PRÉSENTATION ============ */
+.intro{
+  position:fixed;inset:0;z-index:200;overflow:auto;
+  background:linear-gradient(160deg,var(--noir) 0%,#312a20 100%);
+  color:var(--creme);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 22px;text-align:center;
+}
+.intro .badge{
+  font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;
+  border:1px solid var(--orange2);color:var(--orange2);
+  padding:7px 16px;border-radius:999px;margin-bottom:22px;
+}
+.intro h1{font-size:clamp(2.4rem,8vw,4rem);line-height:1.05;font-weight:normal}
+.intro h1 span{color:var(--orange2)}
+.intro .sous{color:#cfc6b8;max-width:520px;margin:16px auto 34px;font-size:.95rem}
+.avantages{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;max-width:900px;width:100%;margin-bottom:38px;
+}
+.avantage{
+  background:rgba(255,253,248,.06);border:1px solid rgba(255,253,248,.12);
+  border-radius:16px;padding:20px 16px;text-align:left;
+}
+.avantage .ico{font-size:1.6rem;margin-bottom:10px}
+.avantage b{display:block;font-size:.95rem;margin-bottom:5px}
+.avantage p{font-size:.82rem;color:#cfc6b8;line-height:1.5}
+.intro .boutons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-intro{
+  padding:16px 30px;border-radius:14px;border:none;font-size:1rem;font-weight:600;
+  display:inline-flex;align-items:center;gap:10px;transition:transform .15s;
+}
+.btn-intro:hover{transform:translateY(-2px)}
+.btn-intro.plein{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;box-shadow:0 14px 34px rgba(232,89,12,.45)}
+.btn-intro.ligne{background:transparent;color:var(--creme);border:1px solid rgba(255,253,248,.4)}
+.intro .note{margin-top:30px;font-size:.75rem;color:#8f8778}
+
+/* ============ BARRE DÉMO (switch de vue) ============ */
+.barre-demo{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:150;
+  display:flex;align-items:center;gap:4px;
+  background:var(--noir);border-radius:999px;padding:5px;
+  box-shadow:0 14px 40px rgba(28,26,23,.45);
+}
+.barre-demo button{
+  border:none;background:transparent;color:#b9b1a3;
+  padding:10px 20px;border-radius:999px;font-size:.85rem;font-weight:600;
+  display:flex;align-items:center;gap:8px;transition:all .2s;
+}
+.barre-demo button.actif{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff}
+.barre-demo .sep{width:1px;height:22px;background:rgba(255,253,248,.15)}
+.barre-demo .demo-tag{
+  font-size:.6rem;letter-spacing:.2em;color:var(--orange2);
+  padding:0 14px 0 10px;text-transform:uppercase;
+}
+
+/* ============ VUES ============ */
+.vue{display:none;max-width:1050px;margin:0 auto;padding:0 16px 120px}
+.vue.actif{display:block}
+
+/* ============ VUE CLIENT ============ */
+.entete-client{
+  display:flex;align-items:center;gap:14px;padding:20px 0 14px;
+}
+.logo-rond{
+  width:52px;height:52px;border-radius:16px;flex:none;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+  box-shadow:0 8px 20px rgba(232,89,12,.35);
+}
+.entete-client h1{font-size:1.7rem;font-weight:normal;line-height:1}
+.entete-client .sous{font-size:.72rem;color:var(--gris);letter-spacing:.12em;text-transform:uppercase}
+.pill-ouvert{
+  margin-left:auto;font-size:.72rem;font-weight:600;color:var(--vert);
+  background:rgba(47,158,68,.12);padding:7px 13px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.pill-ouvert::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--vert)}
+.hero{
+  background:var(--noir);color:var(--creme);border-radius:20px;
+  padding:26px 24px;margin-bottom:22px;position:relative;overflow:hidden;
+}
+.hero::after{content:'🍔';position:absolute;right:-8px;bottom:-18px;font-size:6rem;opacity:.15;transform:rotate(-12deg)}
+.hero h2{font-size:1.9rem;font-weight:normal;line-height:1.1}
+.hero h2 span{color:var(--orange2)}
+.hero p{font-size:.85rem;color:#cfc6b8;margin-top:6px}
+.categories{
+  display:flex;gap:10px;overflow-x:auto;padding:4px 2px 14px;
+  scrollbar-width:none;position:sticky;top:0;background:var(--creme);z-index:5;
+}
+.categories::-webkit-scrollbar{display:none}
+.cat{
+  flex:none;border:1px solid rgba(138,131,120,.35);background:var(--blanc);
+  border-radius:999px;padding:9px 18px;font-size:.85rem;font-weight:500;
+  display:flex;align-items:center;gap:7px;transition:all .2s;
+}
+.cat.actif{background:var(--noir);color:var(--creme);border-color:var(--noir)}
+.grille-menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.carte-prod{
+  background:var(--blanc);border-radius:18px;padding:18px;
+  box-shadow:var(--ombre);display:flex;flex-direction:column;gap:8px;
+  position:relative;transition:transform .15s;
+}
+.carte-prod:hover{transform:translateY(-3px)}
+.carte-prod .emoji{font-size:2.4rem;line-height:1}
+.carte-prod h3{font-size:1rem;font-weight:600}
+.carte-prod .desc{font-size:.78rem;color:var(--gris);line-height:1.45;flex:1}
+.carte-prod .bas{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.carte-prod .prix{font-weight:700;font-size:1.05rem}
+.carte-prod .ajouter{
+  width:38px;height:38px;border-radius:12px;border:none;font-size:1.3rem;line-height:1;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;
+  box-shadow:0 6px 16px rgba(232,89,12,.35);transition:transform .15s;
+}
+.carte-prod .ajouter:active{transform:scale(.9)}
+.carte-prod .tag-options{
+  position:absolute;top:14px;right:14px;font-size:.62rem;letter-spacing:.08em;
+  color:var(--orange);background:rgba(232,89,12,.1);padding:4px 9px;border-radius:999px;
+  text-transform:uppercase;font-weight:600;
+}
+.carte-prod.rupture{opacity:.45;pointer-events:none}
+.carte-prod.rupture::after{
+  content:'Épuisé';position:absolute;inset:auto 14px 16px auto;
+  background:var(--rouge);color:#fff;font-size:.68rem;font-weight:600;
+  padding:4px 10px;border-radius:999px;
+}
+
+/* Panier flottant */
+.fab-panier{
+  position:fixed;right:16px;bottom:80px;z-index:120;
+  border:none;border-radius:18px;padding:16px 22px;
+  background:var(--noir);color:var(--creme);font-size:.95rem;font-weight:600;
+  display:none;align-items:center;gap:12px;
+  box-shadow:0 16px 40px rgba(28,26,23,.4);
+}
+.fab-panier.visible{display:flex}
+.fab-panier .badge{
+  background:var(--orange);border-radius:999px;min-width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;
+}
+
+/* ============ MODALES & PANNEAUX ============ */
+.voile{
+  position:fixed;inset:0;z-index:160;background:rgba(28,26,23,.55);
+  display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.voile.ouvert{display:flex}
+.panneau{
+  background:var(--blanc);width:min(560px,100%);max-height:88vh;overflow:auto;
+  border-radius:24px 24px 0 0;padding:24px 22px 34px;
+  animation:monte .25s ease;
+}
+@keyframes monte{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(min-width:600px){
+  .voile{align-items:center;padding:20px}
+  .panneau{border-radius:24px}
+}
+.panneau .poignee{width:44px;height:5px;border-radius:99px;background:var(--creme2);margin:0 auto 18px}
+.panneau h3{font-size:1.5rem;font-weight:normal;margin-bottom:4px}
+.panneau .sous-titre{font-size:.82rem;color:var(--gris);margin-bottom:18px}
+.groupe-opt{margin-bottom:18px}
+.groupe-opt .etiquette{
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange);font-weight:600;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.groupe-opt .etiquette small{color:var(--gris);letter-spacing:0;text-transform:none;font-weight:400}
+.choix{display:flex;flex-wrap:wrap;gap:8px}
+.choix label{
+  border:1px solid rgba(138,131,120,.4);border-radius:12px;
+  padding:10px 14px;font-size:.85rem;display:flex;align-items:center;gap:8px;
+  cursor:pointer;transition:all .15s;background:var(--creme);
+}
+.choix input{accent-color:var(--orange)}
+.choix label:has(input:checked){border-color:var(--orange);background:rgba(232,89,12,.08);font-weight:600}
+.choix .sup{font-size:.75rem;color:var(--orange);font-weight:600}
+.ligne-qte{display:flex;align-items:center;gap:16px;margin:18px 0}
+.qte-btn{
+  width:42px;height:42px;border-radius:12px;border:1px solid rgba(138,131,120,.4);
+  background:var(--creme);font-size:1.3rem;line-height:1;
+}
+.qte-val{font-size:1.2rem;font-weight:700;min-width:30px;text-align:center}
+.btn-principal{
+  width:100%;border:none;border-radius:14px;padding:17px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;
+  font-size:1rem;font-weight:700;letter-spacing:.03em;
+  box-shadow:0 12px 30px rgba(232,89,12,.4);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.btn-principal:disabled{opacity:.5;box-shadow:none}
+.btn-secondaire{
+  width:100%;border:1px solid rgba(138,131,120,.45);border-radius:14px;padding:14px;
+  background:transparent;color:var(--noir);font-size:.9rem;font-weight:600;margin-top:10px;
+}
+
+/* Panier */
+.ligne-panier{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px 0;border-bottom:1px solid var(--creme2);
+}
+.ligne-panier .emoji{font-size:1.6rem}
+.ligne-panier .infos{flex:1}
+.ligne-panier .nom{font-weight:600;font-size:.95rem}
+.ligne-panier .detail{font-size:.75rem;color:var(--gris);line-height:1.5}
+.ligne-panier .prix{font-weight:700;white-space:nowrap}
+.mini-qte{display:flex;align-items:center;gap:10px;margin-top:8px}
+.mini-qte button{
+  width:28px;height:28px;border-radius:9px;border:1px solid rgba(138,131,120,.4);
+  background:var(--creme);font-size:1rem;line-height:1;
+}
+.total-ligne{
+  display:flex;justify-content:space-between;font-size:.9rem;color:var(--gris);
+  padding:6px 0;
+}
+.total-ligne.grand{font-size:1.15rem;font-weight:700;color:var(--noir);padding-top:12px}
+.champ{margin-bottom:14px}
+.champ label{display:block;font-size:.78rem;font-weight:600;margin-bottom:6px}
+.champ input,.champ select,.champ textarea{
+  width:100%;padding:13px 14px;border:1px solid rgba(138,131,120,.4);
+  border-radius:12px;background:var(--creme);
+}
+.champ input:focus,.champ select:focus,.champ textarea:focus{outline:none;border-color:var(--orange)}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choix-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.choix-mode label{
+  border:1px solid rgba(138,131,120,.4);border-radius:14px;padding:14px;
+  text-align:center;cursor:pointer;background:var(--creme);
+}
+.choix-mode input{display:none}
+.choix-mode label:has(input:checked){border-color:var(--orange);background:rgba(232,89,12,.08)}
+.choix-mode .ico{font-size:1.4rem;display:block;margin-bottom:4px}
+.choix-mode b{font-size:.85rem}
+
+/* Confirmation */
+.confirm{text-align:center;padding:10px 0}
+.confirm .coche{
+  width:74px;height:74px;border-radius:50%;margin:0 auto 18px;
+  background:rgba(47,158,68,.12);display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;
+}
+.confirm .numero{
+  font-family:'Bebas Neue',sans-serif;font-size:3.4rem;line-height:1;
+  color:var(--orange);letter-spacing:.05em;margin:8px 0 2px;
+}
+.confirm .attente{font-size:.85rem;color:var(--gris);margin-bottom:22px}
+.suivi{display:flex;justify-content:space-between;position:relative;margin:26px 6px 30px}
+.suivi::before{
+  content:'';position:absolute;top:14px;left:10%;right:10%;height:3px;
+  background:var(--creme2);border-radius:99px;
+}
+.etape{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;flex:1}
+.etape .rond{
+  width:30px;height:30px;border-radius:50%;background:var(--creme2);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;
+  border:3px solid var(--blanc);transition:all .3s;
+}
+.etape.fait .rond{background:var(--vert);color:#fff}
+.etape.encours .rond{background:var(--orange);color:#fff;box-shadow:0 0 0 5px rgba(232,89,12,.2)}
+.etape span{font-size:.68rem;font-weight:600;color:var(--gris)}
+.etape.fait span,.etape.encours span{color:var(--noir)}
+
+/* ============ VUE GÉRANT ============ */
+.entete-gerant{
+  display:flex;align-items:center;gap:14px;padding:22px 0 18px;flex-wrap:wrap;
+}
+.entete-gerant h1{font-size:1.6rem;font-weight:normal}
+.entete-gerant .sous{font-size:.72rem;color:var(--gris);letter-spacing:.12em;text-transform:uppercase}
+.pill-live{
+  margin-left:auto;font-size:.72rem;font-weight:600;color:var(--orange);
+  background:rgba(232,89,12,.1);padding:7px 13px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;
+}
+.pill-live::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{
+  background:var(--blanc);border-radius:16px;padding:16px;box-shadow:var(--ombre);
+}
+.stat .valeur{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;color:var(--noir)}
+.stat .valeur.orange{color:var(--orange)}
+.stat .libelle{font-size:.7rem;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+.filtres-g{display:flex;gap:8px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none}
+.filtres-g::-webkit-scrollbar{display:none}
+.filtre-g{
+  flex:none;border:1px solid rgba(138,131,120,.35);background:var(--blanc);
+  border-radius:999px;padding:8px 16px;font-size:.82rem;font-weight:500;
+  display:flex;align-items:center;gap:7px;
+}
+.filtre-g.actif{background:var(--noir);color:var(--creme);border-color:var(--noir)}
+.filtre-g .compteur{
+  background:var(--orange);color:#fff;border-radius:999px;
+  min-width:20px;height:20px;font-size:.7rem;display:flex;align-items:center;justify-content:center;padding:0 5px;
+}
+.vide-g{text-align:center;color:var(--gris);font-style:italic;padding:60px 0}
+.carte-cmd{
+  background:var(--blanc);border-radius:18px;padding:18px;margin-bottom:14px;
+  box-shadow:var(--ombre);border-left:5px solid var(--gris);
+}
+.carte-cmd.st-attente{border-left-color:var(--orange)}
+.carte-cmd.st-prepa{border-left-color:#e8b30c}
+.carte-cmd.st-prete{border-left-color:var(--vert)}
+.carte-cmd.st-recup{border-left-color:#b9b1a3;opacity:.7}
+.carte-cmd.st-annulee{border-left-color:var(--rouge);opacity:.55}
+.cmd-haut{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.cmd-num{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1}
+.cmd-client{font-weight:600;font-size:.95rem}
+.cmd-meta{font-size:.75rem;color:var(--gris)}
+.cmd-type{
+  font-size:.7rem;font-weight:600;padding:5px 11px;border-radius:999px;
+  background:var(--creme);border:1px solid rgba(138,131,120,.3);
+}
+.cmd-statut{
+  margin-left:auto;font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;padding:6px 13px;border-radius:999px;
+}
+.cmd-statut.attente{background:rgba(232,89,12,.12);color:var(--orange)}
+.cmd-statut.prepa{background:rgba(232,179,12,.15);color:#a37d06}
+.cmd-statut.prete{background:rgba(47,158,68,.12);color:var(--vert)}
+.cmd-statut.recup{background:var(--creme2);color:var(--gris)}
+.cmd-statut.annulee{background:rgba(192,57,43,.1);color:var(--rouge)}
+.cmd-articles{font-size:.85rem;line-height:1.7;padding:10px 0;border-top:1px dashed var(--creme2)}
+.cmd-articles .opts{color:var(--gris);font-size:.75rem}
+.cmd-note{
+  font-size:.8rem;background:rgba(232,179,12,.1);border-radius:10px;
+  padding:9px 12px;margin-bottom:10px;color:#7a6008;
+}
+.cmd-bas{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:10px;border-top:1px dashed var(--creme2)}
+.cmd-total{font-weight:700;font-size:1.05rem}
+.cmd-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.btn-statut{
+  border:none;border-radius:11px;padding:11px 17px;font-size:.85rem;font-weight:600;
+  color:#fff;transition:transform .15s;
+}
+.btn-statut:active{transform:scale(.95)}
+.btn-statut.prepa{background:#e8b30c}
+.btn-statut.prete{background:var(--vert)}
+.btn-statut.recup{background:var(--noir)}
+.btn-annuler{
+  border:1px solid rgba(192,57,43,.4);background:transparent;color:var(--rouge);
+  border-radius:11px;padding:10px 14px;font-size:.8rem;
+}
+.note-bas{
+  text-align:center;font-size:.72rem;color:var(--gris);padding:30px 0 0;line-height:1.7;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== ÉCRAN DE PRÉSENTATION ==================== -->
+<div class="intro" id="intro">
+  <div class="badge">Maquette de démonstration</div>
+  <h1 class="titre-display">Votre snack,<br><span>commandé en ligne.</span></h1>
+  <p class="sous">Vos clients commandent depuis leur téléphone, vous recevez tout en cuisine, ils récupèrent sans faire la queue. Découvrez les deux côtés du système.</p>
+  <div class="avantages">
+    <div class="avantage">
+      <div class="ico">⏱️</div>
+      <b>Zéro file d'attente</b>
+      <p>Le client commande avant d'arriver et passe juste récupérer. Le comptoir respire aux heures de pointe.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">✅</div>
+      <b>Zéro erreur de commande</b>
+      <p>Sauces, suppléments, tailles : tout est écrit noir sur blanc, plus de malentendus au comptoir.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">📈</div>
+      <b>Panier moyen en hausse</b>
+      <p>Les suppléments et menus sont proposés automatiquement à chaque commande.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">📱</div>
+      <b>Simple pour vous</b>
+      <p>Un écran en cuisine, trois boutons : en préparation, prête, récupérée. C'est tout.</p>
+    </div>
+  </div>
+  <div class="boutons">
+    <button class="btn-intro plein" onclick="fermerIntro('client')">🍔 Voir côté client</button>
+    <button class="btn-intro ligne" onclick="fermerIntro('gerant')">👨‍🍳 Voir côté gérant</button>
+  </div>
+  <div class="note">Maquette interactive — les commandes passées côté client apparaissent instantanément côté gérant.<br>Nom, couleurs, menu et prix : tout est personnalisable à votre enseigne.</div>
+</div>
+
+<!-- ==================== BARRE DE DÉMO ==================== -->
+<div class="barre-demo">
+  <span class="demo-tag">Démo</span>
+  <div class="sep"></div>
+  <button id="onglet-client" class="actif" onclick="changerVue('client')">🍔 Client</button>
+  <button id="onglet-gerant" onclick="changerVue('gerant')">👨‍🍳 Gérant</button>
+</div>
+
+<!-- ==================== VUE CLIENT ==================== -->
+<div class="vue actif" id="vue-client">
+  <header class="entete-client">
+    <div class="logo-rond">🍔</div>
+    <div>
+      <h1 class="titre-display">Le Snack</h1>
+      <div class="sous">Votre enseigne ici</div>
+    </div>
+    <div class="pill-ouvert">Ouvert · 11h – 22h</div>
+  </header>
+
+  <div class="hero">
+    <h2 class="titre-display">Commandez maintenant,<br><span>récupérez sans attendre.</span></h2>
+    <p>Prêt en 15 min en moyenne · Paiement au comptoir ou en ligne</p>
+  </div>
+
+  <nav class="categories" id="categories"></nav>
+  <div class="grille-menu" id="grille-menu"></div>
+
+  <div class="note-bas">Maquette de démonstration — menu, prix et visuels donnés à titre d'exemple.</div>
+</div>
+
+<button class="fab-panier" id="fab-panier" onclick="ouvrirPanier()">
+  <span class="badge" id="badge-panier">0</span>
+  Voir le panier
+  <b id="fab-total">0,00 €</b>
+</button>
+
+<!-- ==================== VUE GÉRANT ==================== -->
+<div class="vue" id="vue-gerant">
+  <header class="entete-gerant">
+    <div class="logo-rond">👨‍🍳</div>
+    <div>
+      <h1 class="titre-display">Écran cuisine</h1>
+      <div class="sous">Le Snack — Gestion des commandes</div>
+    </div>
+    <div class="pill-live">En direct</div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <nav class="filtres-g" id="filtres-g"></nav>
+  <div id="liste-commandes"></div>
+
+  <div class="note-bas">Dans la version finale : accès protégé par code, notification sonore à chaque commande,<br>impression de ticket cuisine et historique complet.</div>
+</div>
+
+<!-- ==================== MODALE PRODUIT ==================== -->
+<div class="voile" id="voile-produit" onclick="if(event.target===this)fermerVoiles()">
+  <div class="panneau" id="panneau-produit"></div>
+</div>
+
+<!-- ==================== PANNEAU PANIER / COMMANDE ==================== -->
+<div class="voile" id="voile-panier" onclick="if(event.target===this)fermerVoiles()">
+  <div class="panneau" id="panneau-panier"></div>
+</div>
+
+<script>
+/* =====================================================
+   DONNÉES DE LA MAQUETTE (menu d'exemple, personnalisable)
+===================================================== */
+const CATEGORIES = [
+  {id:'tacos',    nom:'Tacos',           ico:'🌯'},
+  {id:'burgers',  nom:'Burgers',         ico:'🍔'},
+  {id:'sandwichs',nom:'Sandwichs',       ico:'🥙'},
+  {id:'assiettes',nom:'Assiettes',       ico:'🍽️'},
+  {id:'sides',    nom:'Accompagnements', ico:'🍟'},
+  {id:'boissons', nom:'Boissons',        ico:'🥤'},
+  {id:'desserts', nom:'Desserts',        ico:'🍩'},
+];
+
+const SAUCES = ['Algérienne','Blanche','Samouraï','Ketchup','Mayonnaise','Barbecue','Harissa'];
+
+const PRODUITS = [
+  {id:'tacos-m', cat:'tacos', emoji:'🌯', nom:'Tacos M', prix:7.50,
+   desc:'1 viande au choix, frites, sauce fromagère maison.',
+   options:[
+     {nom:'Viande', type:'radio', requis:true, choix:[['Poulet mariné',0],['Viande hachée',0],['Cordon bleu',0],['Merguez',0]]},
+     {nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])},
+     {nom:'Suppléments', type:'check', choix:[['Cheddar',1],['Œuf',1],['Bacon de dinde',1.5],['Double viande',2.5]]},
+   ]},
+  {id:'tacos-l', cat:'tacos', emoji:'🌯', nom:'Tacos L', prix:9.50,
+   desc:'2 viandes au choix, frites, sauce fromagère maison.',
+   options:[
+     {nom:'Viandes (2)', type:'check', max:2, requis:true, choix:[['Poulet mariné',0],['Viande hachée',0],['Cordon bleu',0],['Merguez',0]]},
+     {nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])},
+     {nom:'Suppléments', type:'check', choix:[['Cheddar',1],['Œuf',1],['Bacon de dinde',1.5],['Double fromagère',1]]},
+   ]},
+  {id:'burger-classic', cat:'burgers', emoji:'🍔', nom:'Classic Burger', prix:6.50,
+   desc:'Steak 150 g, cheddar, salade, tomate, oignons, sauce burger.',
+   options:[
+     {nom:'Cuisson & extras', type:'check', choix:[['Double steak',2.5],['Cheddar en plus',1],['Bacon de dinde',1.5],['Sans oignons',0]]},
+     {nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])},
+   ]},
+  {id:'burger-chicken', cat:'burgers', emoji:'🍗', nom:'Chicken Crispy', prix:7.00,
+   desc:'Poulet pané croustillant, cheddar, coleslaw, sauce miel-moutarde.',
+   options:[
+     {nom:'Extras', type:'check', choix:[['Double poulet',2.5],['Cheddar en plus',1],['Piment jalapeño',0.5]]},
+   ]},
+  {id:'burger-menu', cat:'burgers', emoji:'🍟', nom:'Menu Burger', prix:9.90,
+   desc:'Burger au choix + frites + boisson 33 cl. Le plus demandé !',
+   options:[
+     {nom:'Burger', type:'radio', requis:true, choix:[['Classic Burger',0],['Chicken Crispy',0.5]]},
+     {nom:'Boisson', type:'radio', requis:true, choix:[['Coca-Cola',0],['Coca zéro',0],['Oasis Tropical',0],['Eau minérale',0]]},
+   ]},
+  {id:'kebab', cat:'sandwichs', emoji:'🥙', nom:'Sandwich Kebab', prix:6.50,
+   desc:'Pain artisanal, viande kebab, crudités, sauce au choix.',
+   options:[
+     {nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])},
+     {nom:'Extras', type:'check', choix:[['Frites dedans',1],['Cheddar',1]]},
+   ]},
+  {id:'panini', cat:'sandwichs', emoji:'🥪', nom:'Panini 3 fromages', prix:5.50,
+   desc:'Mozzarella, cheddar, chèvre, crème fraîche.', options:[]},
+  {id:'americain', cat:'sandwichs', emoji:'🥖', nom:'Américain', prix:7.00,
+   desc:'Demi-baguette, steak haché, frites, crudités, sauce au choix.',
+   options:[{nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])}]},
+  {id:'assiette-kebab', cat:'assiettes', emoji:'🍽️', nom:'Assiette Kebab', prix:10.50,
+   desc:'Viande kebab, frites, salade, pain, sauce au choix.',
+   options:[{nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])}]},
+  {id:'assiette-mixte', cat:'assiettes', emoji:'🥩', nom:'Assiette Mixte', prix:12.50,
+   desc:'Kebab + poulet mariné + merguez, frites, salade, pain.',
+   options:[{nom:'Sauces', type:'check', max:2, choix:SAUCES.map(s=>[s,0])}]},
+  {id:'frites', cat:'sides', emoji:'🍟', nom:'Frites maison', prix:3.00,
+   desc:'Portion généreuse, sel fin.',
+   options:[{nom:'Extras', type:'check', choix:[['Sauce fromagère',1],['Cheddar fondu',1.5]]}]},
+  {id:'tenders', cat:'sides', emoji:'🍗', nom:'Tenders x5', prix:5.00,
+   desc:'5 aiguillettes de poulet panées + 1 sauce.',
+   options:[{nom:'Sauce', type:'radio', requis:true, choix:[['Barbecue',0],['Miel-moutarde',0],['Blanche',0]]}]},
+  {id:'onion-rings', cat:'sides', emoji:'🧅', nom:'Onion Rings x8', prix:4.00,
+   desc:'Oignons frits croustillants.', options:[]},
+  {id:'coca', cat:'boissons', emoji:'🥤', nom:'Coca-Cola 33 cl', prix:2.00, desc:'Bien frais.', options:[]},
+  {id:'oasis', cat:'boissons', emoji:'🧃', nom:'Oasis Tropical 33 cl', prix:2.00, desc:'Bien frais.', options:[]},
+  {id:'eau', cat:'boissons', emoji:'💧', nom:'Eau minérale 50 cl', prix:1.50, desc:'Plate ou gazeuse.', options:[]},
+  {id:'tiramisu', cat:'desserts', emoji:'🍰', nom:'Tiramisu maison', prix:3.50, desc:'Spéculoos ou café.', options:[]},
+  {id:'cookie', cat:'desserts', emoji:'🍪', nom:'Cookie XXL', prix:2.50, desc:'Chocolat au lait, cœur fondant.', options:[]},
+  {id:'donut', cat:'desserts', emoji:'🍩', nom:'Donut glacé', prix:2.00, desc:'Chocolat ou sucre glace.', options:[], rupture:true},
+];
+
+const STATUTS = {
+  attente:{nom:'En attente',  suivant:'prepa', btn:'🔥 En préparation'},
+  prepa:  {nom:'En préparation', suivant:'prete', btn:'✅ Prête'},
+  prete:  {nom:'Prête',       suivant:'recup', btn:'📦 Récupérée'},
+  recup:  {nom:'Récupérée'},
+  annulee:{nom:'Annulée'},
+};
+
+/* =====================================================
+   ÉTAT (localStorage pour que client + gérant partagent)
+===================================================== */
+const CLE = 'maquette_snack_commandes';
+let panier = [];
+let catActive = 'tacos';
+let filtreG = 'actives';
+let derniereCommande = null;
+
+function chargerCommandes(){
+  try{ return JSON.parse(localStorage.getItem(CLE)) || null }catch(e){ return null }
+}
+function sauverCommandes(liste){
+  try{ localStorage.setItem(CLE, JSON.stringify(liste)) }catch(e){}
+}
+function initDemo(){
+  if(chargerCommandes()) return;
+  const maintenant = Date.now();
+  sauverCommandes([
+    {num:37, nom:'Karim', tel:'06 12 34 56 78', mode:'emporter', quand:'Dès que possible',
+     articles:[{emoji:'🌯',nom:'Tacos L',qte:1,prix:11.5,opts:'Poulet mariné, Viande hachée · Algérienne, Blanche · +Cheddar'},
+               {emoji:'🥤',nom:'Coca-Cola 33 cl',qte:1,prix:2,opts:''}],
+     total:13.5, note:'', statut:'prepa', ts:maintenant-9*60000},
+    {num:36, nom:'Sarah', tel:'07 98 76 54 32', mode:'surplace', quand:'Dès que possible',
+     articles:[{emoji:'🍟',nom:'Menu Burger',qte:2,prix:19.8,opts:'Classic Burger · Oasis Tropical'}],
+     total:19.8, note:'Sans oignons svp', statut:'prete', ts:maintenant-16*60000},
+    {num:35, nom:'Mehdi', tel:'06 55 44 33 22', mode:'emporter', quand:'12h30',
+     articles:[{emoji:'🍽️',nom:'Assiette Mixte',qte:1,prix:12.5,opts:'Samouraï, Harissa'},
+               {emoji:'🍰',nom:'Tiramisu maison',qte:1,prix:3.5,opts:''}],
+     total:16, note:'', statut:'recup', ts:maintenant-42*60000},
+  ]);
+}
+
+const eur = n => n.toFixed(2).replace('.',',') + ' €';
+const heure = ts => new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function fermerIntro(vue){
+  document.getElementById('intro').style.display='none';
+  changerVue(vue);
+}
+function changerVue(vue){
+  document.getElementById('vue-client').classList.toggle('actif', vue==='client');
+  document.getElementById('vue-gerant').classList.toggle('actif', vue==='gerant');
+  document.getElementById('onglet-client').classList.toggle('actif', vue==='client');
+  document.getElementById('onglet-gerant').classList.toggle('actif', vue==='gerant');
+  if(vue==='gerant') rendreGerant();
+  majFab();
+  window.scrollTo(0,0);
+}
+function fermerVoiles(){
+  document.getElementById('voile-produit').classList.remove('ouvert');
+  document.getElementById('voile-panier').classList.remove('ouvert');
+}
+
+/* =====================================================
+   VUE CLIENT — menu
+===================================================== */
+function rendreCategories(){
+  document.getElementById('categories').innerHTML = CATEGORIES.map(c=>
+    `<button class="cat ${c.id===catActive?'actif':''}" onclick="catActive='${c.id}';rendreCategories();rendreMenu()">${c.ico} ${c.nom}</button>`
+  ).join('');
+}
+function rendreMenu(){
+  document.getElementById('grille-menu').innerHTML = PRODUITS.filter(p=>p.cat===catActive).map(p=>`
+    <div class="carte-prod ${p.rupture?'rupture':''}">
+      ${p.options.length?'<span class="tag-options">Au choix</span>':''}
+      <div class="emoji">${p.emoji}</div>
+      <h3>${p.nom}</h3>
+      <div class="desc">${p.desc}</div>
+      <div class="bas">
+        <span class="prix">${eur(p.prix)}</span>
+        <button class="ajouter" onclick="ouvrirProduit('${p.id}')" aria-label="Ajouter ${p.nom}">+</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ----- modale produit ----- */
+let prodEnCours = null, qteEnCours = 1;
+function ouvrirProduit(id){
+  prodEnCours = PRODUITS.find(p=>p.id===id);
+  qteEnCours = 1;
+  const p = prodEnCours;
+  let html = `
+    <div class="poignee"></div>
+    <h3 class="titre-display">${p.emoji} ${p.nom}</h3>
+    <div class="sous-titre">${p.desc}</div>`;
+  p.options.forEach((g,gi)=>{
+    html += `<div class="groupe-opt">
+      <div class="etiquette">${g.nom}${g.requis?'':' <small>(facultatif)</small>'}${g.max?`<small>max ${g.max}</small>`:''}</div>
+      <div class="choix">`;
+    g.choix.forEach(([nom,sup],ci)=>{
+      html += `<label>
+        <input type="${g.type==='radio'?'radio':'checkbox'}" name="opt-${gi}" value="${ci}" onchange="majPrixModale()">
+        ${nom}${sup>0?` <span class="sup">+${eur(sup)}</span>`:''}
+      </label>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `
+    <div class="ligne-qte">
+      <button class="qte-btn" onclick="changerQte(-1)">−</button>
+      <span class="qte-val" id="qte-val">1</span>
+      <button class="qte-btn" onclick="changerQte(1)">+</button>
+    </div>
+    <button class="btn-principal" id="btn-ajout" onclick="ajouterAuPanier()">
+      <span>Ajouter au panier</span><span id="prix-modale">${eur(p.prix)}</span>
+    </button>`;
+  document.getElementById('panneau-produit').innerHTML = html;
+  document.getElementById('voile-produit').classList.add('ouvert');
+  majPrixModale();
+}
+function changerQte(d){
+  qteEnCours = Math.max(1, Math.min(9, qteEnCours+d));
+  document.getElementById('qte-val').textContent = qteEnCours;
+  majPrixModale();
+}
+function lireOptions(){
+  const res = [];
+  let prixSup = 0, valide = true;
+  prodEnCours.options.forEach((g,gi)=>{
+    const coches = [...document.querySelectorAll(`[name="opt-${gi}"]:checked`)];
+    if(g.max && coches.length > g.max){
+      coches.slice(g.max).forEach(c=>c.checked=false);
+    }
+    const noms = [...document.querySelectorAll(`[name="opt-${gi}"]:checked`)].map(c=>{
+      const [nom,sup] = g.choix[+c.value];
+      prixSup += sup;
+      return nom;
+    });
+    if(g.requis && noms.length===0) valide = false;
+    if(noms.length) res.push(noms.join(', '));
+  });
+  return {texte:res.join(' · '), prixSup, valide};
+}
+function majPrixModale(){
+  const {prixSup, valide} = lireOptions();
+  const total = (prodEnCours.prix + prixSup) * qteEnCours;
+  document.getElementById('prix-modale').textContent = eur(total);
+  document.getElementById('btn-ajout').disabled = !valide;
+}
+function ajouterAuPanier(){
+  const {texte, prixSup, valide} = lireOptions();
+  if(!valide) return;
+  panier.push({
+    emoji:prodEnCours.emoji, nom:prodEnCours.nom,
+    prixUnit:prodEnCours.prix + prixSup, qte:qteEnCours, opts:texte,
+  });
+  fermerVoiles();
+  majFab();
+}
+function majFab(){
+  const enClient = document.getElementById('vue-client').classList.contains('actif');
+  const nb = panier.reduce((s,l)=>s+l.qte,0);
+  const total = panier.reduce((s,l)=>s+l.prixUnit*l.qte,0);
+  const fab = document.getElementById('fab-panier');
+  fab.classList.toggle('visible', enClient && nb>0);
+  document.getElementById('badge-panier').textContent = nb;
+  document.getElementById('fab-total').textContent = eur(total);
+}
+
+/* ----- panier & commande ----- */
+function ouvrirPanier(){
+  rendrePanier();
+  document.getElementById('voile-panier').classList.add('ouvert');
+}
+function rendrePanier(){
+  const total = panier.reduce((s,l)=>s+l.prixUnit*l.qte,0);
+  let html = `<div class="poignee"></div><h3 class="titre-display">🛒 Votre panier</h3>
+    <div class="sous-titre">${panier.length?'Vérifiez votre commande avant de valider.':'Votre panier est vide.'}</div>`;
+  panier.forEach((l,i)=>{
+    html += `<div class="ligne-panier">
+      <div class="emoji">${l.emoji}</div>
+      <div class="infos">
+        <div class="nom">${l.nom}</div>
+        ${l.opts?`<div class="detail">${l.opts}</div>`:''}
+        <div class="mini-qte">
+          <button onclick="qtePanier(${i},-1)">−</button><b>${l.qte}</b><button onclick="qtePanier(${i},1)">+</button>
+        </div>
+      </div>
+      <div class="prix">${eur(l.prixUnit*l.qte)}</div>
+    </div>`;
+  });
+  if(panier.length){
+    html += `
+      <div class="total-ligne grand"><span>Total</span><span>${eur(total)}</span></div>
+      <div style="height:14px"></div>
+      <button class="btn-principal" onclick="ouvrirCheckout()"><span>Passer la commande</span><span>${eur(total)}</span></button>
+      <button class="btn-secondaire" onclick="fermerVoiles()">Continuer mes achats</button>`;
+  } else {
+    html += `<button class="btn-secondaire" onclick="fermerVoiles()">Retour au menu</button>`;
+  }
+  document.getElementById('panneau-panier').innerHTML = html;
+}
+function qtePanier(i,d){
+  panier[i].qte += d;
+  if(panier[i].qte<=0) panier.splice(i,1);
+  majFab();
+  if(panier.length) rendrePanier(); else fermerVoiles();
+}
+function ouvrirCheckout(){
+  const total = panier.reduce((s,l)=>s+l.prixUnit*l.qte,0);
+  document.getElementById('panneau-panier').innerHTML = `
+    <div class="poignee"></div>
+    <h3 class="titre-display">📋 Vos informations</h3>
+    <div class="sous-titre">Encore 30 secondes et c'est parti en cuisine !</div>
+    <div class="choix-mode">
+      <label><input type="radio" name="mode" value="emporter" checked><span class="ico">🥡</span><b>À emporter</b></label>
+      <label><input type="radio" name="mode" value="surplace"><span class="ico">🍽️</span><b>Sur place</b></label>
+    </div>
+    <div class="deux-col">
+      <div class="champ"><label>Prénom *</label><input id="f-nom" placeholder="Ex : Karim"></div>
+      <div class="champ"><label>Téléphone *</label><input id="f-tel" inputmode="tel" placeholder="06 12 34 56 78"></div>
+    </div>
+    <div class="champ"><label>Heure de retrait</label>
+      <select id="f-quand">
+        <option>Dès que possible (~15 min)</option>
+        <option>12h00</option><option>12h30</option><option>13h00</option>
+        <option>19h00</option><option>19h30</option><option>20h00</option><option>20h30</option>
+      </select>
+    </div>
+    <div class="champ"><label>Une précision pour la cuisine ? (facultatif)</label>
+      <textarea id="f-note" rows="2" placeholder="Ex : bien cuit, sans oignons…"></textarea>
+    </div>
+    <div class="champ"><label>Paiement</label>
+      <select id="f-paiement">
+        <option>Au comptoir (espèces ou CB)</option>
+        <option>En ligne (CB) — disponible dans la version finale</option>
+      </select>
+    </div>
+    <button class="btn-principal" onclick="validerCommande()"><span>Confirmer la commande</span><span>${eur(total)}</span></button>
+    <button class="btn-secondaire" onclick="ouvrirPanier()">← Retour au panier</button>`;
+}
+function validerCommande(){
+  const nom = document.getElementById('f-nom').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  if(!nom || !tel){
+    document.getElementById('f-nom').style.borderColor = nom?'':'var(--rouge)';
+    document.getElementById('f-tel').style.borderColor = tel?'':'var(--rouge)';
+    return;
+  }
+  const liste = chargerCommandes() || [];
+  const num = liste.reduce((m,c)=>Math.max(m,c.num), 37) + 1;
+  const commande = {
+    num, nom, tel,
+    mode: document.querySelector('[name="mode"]:checked').value,
+    quand: document.getElementById('f-quand').value,
+    note: document.getElementById('f-note').value.trim(),
+    articles: panier.map(l=>({emoji:l.emoji,nom:l.nom,qte:l.qte,prix:l.prixUnit*l.qte,opts:l.opts})),
+    total: panier.reduce((s,l)=>s+l.prixUnit*l.qte,0),
+    statut:'attente', ts:Date.now(),
+  };
+  liste.unshift(commande);
+  sauverCommandes(liste);
+  derniereCommande = num;
+  panier = [];
+  majFab();
+  rendreConfirmation();
+}
+function rendreConfirmation(){
+  const liste = chargerCommandes() || [];
+  const c = liste.find(x=>x.num===derniereCommande);
+  if(!c) return fermerVoiles();
+  const ordre = ['attente','prepa','prete','recup'];
+  const pos = ordre.indexOf(c.statut);
+  const etapes = [
+    ['📨','Reçue'],['🔥','En préparation'],['✅','Prête'],['📦','Récupérée'],
+  ].map(([ico,nom],i)=>{
+    const cls = i<pos ? 'fait' : i===pos ? 'encours' : '';
+    return `<div class="etape ${cls}"><div class="rond">${i<pos?'✓':ico}</div><span>${nom}</span></div>`;
+  }).join('');
+  document.getElementById('panneau-panier').innerHTML = `
+    <div class="poignee"></div>
+    <div class="confirm">
+      <div class="coche">🎉</div>
+      <h3 class="titre-display">Commande confirmée !</h3>
+      <div class="numero">N° ${c.num}</div>
+      <div class="attente">${c.mode==='emporter'?'À emporter':'Sur place'} · ${c.quand}<br>Présentez ce numéro au comptoir.</div>
+      <div class="suivi">${etapes}</div>
+      <div class="sous-titre">Le statut se met à jour en direct — passez côté gérant<br>puis revenez ici pour voir l'avancement.</div>
+      <button class="btn-principal" style="justify-content:center" onclick="rendreConfirmation()">🔄 Actualiser le statut</button>
+      <button class="btn-secondaire" onclick="fermerVoiles()">Fermer</button>
+    </div>`;
+  document.getElementById('voile-panier').classList.add('ouvert');
+}
+
+/* =====================================================
+   VUE GÉRANT
+===================================================== */
+const FILTRES_G = [
+  {id:'actives', nom:'À traiter'},
+  {id:'attente', nom:'En attente'},
+  {id:'prepa',   nom:'En préparation'},
+  {id:'prete',   nom:'Prêtes'},
+  {id:'recup',   nom:'Récupérées'},
+  {id:'toutes',  nom:'Toutes'},
+];
+function rendreGerant(){
+  const liste = chargerCommandes() || [];
+  const jour = liste.filter(c=>c.statut!=='annulee');
+  const attente = liste.filter(c=>c.statut==='attente').length;
+  const actives = liste.filter(c=>['attente','prepa','prete'].includes(c.statut)).length;
+  const ca = jour.reduce((s,c)=>s+c.total,0);
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="valeur">${jour.length}</div><div class="libelle">Commandes aujourd'hui</div></div>
+    <div class="stat"><div class="valeur orange">${attente}</div><div class="libelle">En attente</div></div>
+    <div class="stat"><div class="valeur">${eur(ca)}</div><div class="libelle">Chiffre du jour</div></div>
+    <div class="stat"><div class="valeur">${jour.length?eur(ca/jour.length):'—'}</div><div class="libelle">Panier moyen</div></div>`;
+  document.getElementById('filtres-g').innerHTML = FILTRES_G.map(f=>{
+    const nb = f.id==='actives' ? actives : null;
+    return `<button class="filtre-g ${f.id===filtreG?'actif':''}" onclick="filtreG='${f.id}';rendreGerant()">
+      ${f.nom}${nb?`<span class="compteur">${nb}</span>`:''}</button>`;
+  }).join('');
+  const visibles = liste.filter(c=>{
+    if(filtreG==='toutes') return true;
+    if(filtreG==='actives') return ['attente','prepa','prete'].includes(c.statut);
+    return c.statut===filtreG;
+  });
+  document.getElementById('liste-commandes').innerHTML = visibles.length ? visibles.map(carteCommande).join('')
+    : `<div class="vide-g">Aucune commande dans cette catégorie.<br>Passez une commande côté client pour voir la magie opérer ✨</div>`;
+}
+function carteCommande(c){
+  const st = STATUTS[c.statut];
+  const articles = c.articles.map(a=>
+    `${a.qte} × ${a.emoji} <b>${a.nom}</b> — ${eur(a.prix)}${a.opts?`<div class="opts">↳ ${a.opts}</div>`:''}`
+  ).join('');
+  let actions = '';
+  if(st.suivant){
+    actions += `<button class="btn-statut ${st.suivant}" onclick="avancer(${c.num})">${st.btn}</button>`;
+  }
+  if(['attente','prepa'].includes(c.statut)){
+    actions += `<button class="btn-annuler" onclick="annuler(${c.num})">Annuler</button>`;
+  }
+  return `<div class="carte-cmd st-${c.statut}">
+    <div class="cmd-haut">
+      <span class="cmd-num">#${c.num}</span>
+      <div>
+        <div class="cmd-client">${c.nom} · ${c.tel}</div>
+        <div class="cmd-meta">Passée à ${heure(c.ts)} · Retrait : ${c.quand}</div>
+      </div>
+      <span class="cmd-type">${c.mode==='emporter'?'🥡 À emporter':'🍽️ Sur place'}</span>
+      <span class="cmd-statut ${c.statut}">${st.nom}</span>
+    </div>
+    ${c.note?`<div class="cmd-note">📝 ${c.note}</div>`:''}
+    <div class="cmd-articles">${articles}</div>
+    <div class="cmd-bas">
+      <span class="cmd-total">Total : ${eur(c.total)}</span>
+      <div class="cmd-actions">${actions}</div>
+    </div>
+  </div>`;
+}
+function avancer(num){
+  const liste = chargerCommandes() || [];
+  const c = liste.find(x=>x.num===num);
+  if(c && STATUTS[c.statut].suivant){
+    c.statut = STATUTS[c.statut].suivant;
+    sauverCommandes(liste);
+    rendreGerant();
+  }
+}
+function annuler(num){
+  const liste = chargerCommandes() || [];
+  const c = liste.find(x=>x.num===num);
+  if(c){ c.statut='annulee'; sauverCommandes(liste); rendreGerant(); }
+}
+
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
+initDemo();
+rendreCategories();
+rendreMenu();
+</script>
+</body>
+</html>
