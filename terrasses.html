@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Réservation Les Terrasses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --marine:#123f5c;
+  --marine2:#1b5578;
+  --azur:#2b7db3;
+  --sable:#f5f2ea;
+  --sable2:#e9e4d6;
+  --soleil:#e5a819;
+  --soleil2:#f2c14e;
+  --gris:#85857b;
+  --blanc:#fdfcf8;
+  --rouge:#b3392f;
+  --ok:#2f9e44;
+  --ombre:0 10px 30px rgba(18,63,92,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Karla',system-ui,sans-serif;
+  background:var(--sable);color:var(--marine);
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:1rem}
+.titre-display{font-family:'Marcellus',Georgia,serif;font-weight:normal;letter-spacing:.02em}
+
+/* ============ INTRO / PRÉSENTATION ============ */
+.intro{
+  position:fixed;inset:0;z-index:200;overflow:auto;
+  background:linear-gradient(170deg,var(--marine) 0%,#1e6285 100%);
+  color:var(--sable);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 22px;text-align:center;
+}
+.intro .badge{
+  font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;
+  border:1px solid var(--soleil2);color:var(--soleil2);
+  padding:7px 16px;border-radius:999px;margin-bottom:22px;
+}
+.intro h1{font-size:clamp(2.2rem,7.5vw,3.8rem);line-height:1.1}
+.intro h1 span{color:var(--soleil2)}
+.intro .sous{color:#c3d2da;max-width:540px;margin:16px auto 34px;font-size:.95rem}
+.avantages{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;max-width:900px;width:100%;margin-bottom:38px;
+}
+.avantage{
+  background:rgba(253,252,248,.07);border:1px solid rgba(253,252,248,.14);
+  border-radius:16px;padding:20px 16px;text-align:left;
+}
+.avantage .ico{font-size:1.6rem;margin-bottom:10px}
+.avantage b{display:block;font-size:.95rem;margin-bottom:5px}
+.avantage p{font-size:.82rem;color:#c3d2da;line-height:1.5}
+.intro .boutons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-intro{
+  padding:16px 30px;border-radius:14px;border:none;font-size:1rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:10px;transition:transform .15s;
+}
+.btn-intro:hover{transform:translateY(-2px)}
+.btn-intro.plein{background:linear-gradient(135deg,var(--soleil),var(--soleil2));color:var(--marine);box-shadow:0 14px 34px rgba(229,168,25,.4)}
+.btn-intro.ligne{background:transparent;color:var(--sable);border:1px solid rgba(253,252,248,.4)}
+.intro .note{margin-top:30px;font-size:.75rem;color:#8fa5b1}
+
+/* ============ BARRE DÉMO ============ */
+.barre-demo{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:150;
+  display:flex;align-items:center;gap:4px;
+  background:var(--marine);border-radius:999px;padding:5px;
+  box-shadow:0 14px 40px rgba(18,63,92,.45);
+}
+.barre-demo button{
+  border:none;background:transparent;color:#9db4c0;
+  padding:10px 20px;border-radius:999px;font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:8px;transition:all .2s;
+}
+.barre-demo button.actif{background:linear-gradient(135deg,var(--soleil),var(--soleil2));color:var(--marine)}
+.barre-demo .sep{width:1px;height:22px;background:rgba(253,252,248,.15)}
+.barre-demo .demo-tag{
+  font-size:.6rem;letter-spacing:.2em;color:var(--soleil2);
+  padding:0 14px 0 10px;text-transform:uppercase;
+}
+
+/* ============ VUES ============ */
+.vue{display:none;max-width:1050px;margin:0 auto;padding:0 16px 120px}
+.vue.actif{display:block}
+
+/* ============ VUE CLIENT ============ */
+.entete-client{display:flex;align-items:center;gap:14px;padding:20px 0 14px}
+.logo-rond{
+  width:52px;height:52px;border-radius:16px;flex:none;font-size:1.5rem;
+  background:repeating-linear-gradient(135deg,var(--marine) 0 10px,var(--marine2) 10px 20px);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(18,63,92,.35);
+}
+.entete-client h1{font-size:1.55rem;line-height:1.1}
+.entete-client .sous{font-size:.72rem;color:var(--gris);letter-spacing:.14em;text-transform:uppercase}
+.pill-ouvert{
+  margin-left:auto;font-size:.72rem;font-weight:700;color:var(--ok);
+  background:rgba(47,158,68,.12);padding:7px 13px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.pill-ouvert::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.hero{
+  background:var(--marine);color:var(--sable);border-radius:20px;
+  padding:26px 24px;margin-bottom:24px;position:relative;overflow:hidden;
+  border-bottom:4px solid var(--soleil);
+}
+.hero::after{content:'⛱️';position:absolute;right:-2px;bottom:-14px;font-size:5.4rem;opacity:.18;transform:rotate(-10deg)}
+.hero h2{font-size:1.75rem;line-height:1.15}
+.hero h2 span{color:var(--soleil2)}
+.hero p{font-size:.85rem;color:#c3d2da;margin-top:6px}
+
+/* étapes */
+.fil-etapes{display:flex;gap:6px;margin-bottom:20px}
+.fil-etapes .pas{flex:1;height:5px;border-radius:99px;background:var(--sable2);transition:background .3s}
+.fil-etapes .pas.fait{background:var(--azur)}
+.titre-etape{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.titre-etape h2{font-size:1.35rem}
+.titre-etape .num{
+  font-size:.72rem;font-weight:700;color:var(--soleil);
+  letter-spacing:.2em;text-transform:uppercase;
+}
+.bloc-etape{display:none}
+.bloc-etape.actif{display:block}
+.sous-cat{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--azur);font-weight:700;margin:20px 0 10px}
+
+/* personnes */
+.grille-pers{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;max-width:560px}
+.pers{
+  border:1px solid rgba(133,133,123,.35);background:var(--blanc);
+  border-radius:13px;padding:14px 6px;text-align:center;transition:all .15s;
+}
+.pers.choisi{background:var(--marine);color:var(--sable);border-color:var(--marine)}
+.pers .chiffre{font-family:'Marcellus',serif;font-size:1.4rem;line-height:1.1}
+.pers .lab{font-size:.66rem;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
+.note-groupe{font-size:.8rem;color:var(--gris);margin-top:12px;font-style:italic}
+
+/* zones */
+.grille-zones{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.zone{
+  background:var(--blanc);border-radius:16px;padding:20px 16px;box-shadow:var(--ombre);
+  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  border:2px solid transparent;transition:all .15s;text-align:center;
+}
+.zone.choisi{border-color:var(--azur);background:rgba(43,125,179,.06)}
+.zone .ico{font-size:2rem}
+.zone .nom{font-weight:700}
+.zone .det{font-size:.75rem;color:var(--gris);line-height:1.4}
+
+/* date + créneaux */
+.bande-jours{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none}
+.bande-jours::-webkit-scrollbar{display:none}
+.jour{
+  flex:none;min-width:76px;border:1px solid rgba(133,133,123,.35);background:var(--blanc);
+  border-radius:14px;padding:10px 12px;text-align:center;transition:all .15s;
+}
+.jour.choisi{background:var(--marine);color:var(--sable);border-color:var(--marine)}
+.jour .semaine{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+.jour .chiffre{font-family:'Marcellus',serif;font-size:1.4rem;line-height:1.2}
+.jour .mois{font-size:.68rem;opacity:.7}
+.grille-creneaux{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+.creneau{
+  border:1px solid rgba(133,133,123,.35);background:var(--blanc);
+  border-radius:11px;padding:11px 6px;font-size:.9rem;font-weight:700;transition:all .15s;
+}
+.creneau.choisi{background:var(--azur);color:#fff;border-color:var(--azur)}
+.creneau:disabled{opacity:.32;text-decoration:line-through;cursor:not-allowed}
+.info-duree{font-size:.8rem;color:var(--gris);margin:14px 0 10px;display:flex;align-items:center;gap:8px}
+.aucun-creneau{font-size:.9rem;color:var(--gris);font-style:italic;padding:20px 0}
+
+/* barre de suite */
+.barre-suite{
+  position:sticky;bottom:74px;margin-top:22px;
+  background:var(--blanc);border-radius:16px;padding:14px;
+  box-shadow:0 -4px 30px rgba(18,63,92,.15);
+  display:flex;align-items:center;gap:14px;
+}
+.barre-suite .recap{flex:1;font-size:.82rem;color:var(--gris);line-height:1.4}
+.barre-suite .recap b{color:var(--marine);font-size:.95rem;display:block}
+.btn-principal{
+  border:none;border-radius:13px;padding:15px 26px;
+  background:linear-gradient(135deg,var(--azur),#3f96cf);color:#fff;
+  font-size:.95rem;font-weight:700;
+  box-shadow:0 12px 30px rgba(43,125,179,.35);
+  display:inline-flex;justify-content:center;align-items:center;gap:10px;
+}
+.btn-principal:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+.btn-principal.large{width:100%}
+.btn-retour{
+  border:1px solid rgba(133,133,123,.45);background:transparent;
+  border-radius:13px;padding:14px 18px;font-size:.9rem;font-weight:700;color:var(--marine);
+}
+.btn-secondaire{
+  width:100%;border:1px solid rgba(133,133,123,.45);border-radius:13px;padding:14px;
+  background:transparent;color:var(--marine);font-size:.9rem;font-weight:700;margin-top:10px;
+}
+
+/* formulaire + récap */
+.champ{margin-bottom:14px}
+.champ label{display:block;font-size:.78rem;font-weight:700;margin-bottom:6px}
+.champ input,.champ textarea{
+  width:100%;padding:13px 14px;border:1px solid rgba(133,133,123,.4);
+  border-radius:12px;background:var(--blanc);
+}
+.champ input:focus,.champ textarea:focus{outline:none;border-color:var(--azur)}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.carte-recap{
+  background:var(--blanc);border-radius:16px;padding:18px;box-shadow:var(--ombre);
+  margin-bottom:18px;border-top:3px solid var(--soleil);
+}
+.carte-recap .ligne{display:flex;justify-content:space-between;font-size:.9rem;padding:5px 0;gap:16px}
+.carte-recap .ligne span:first-child{color:var(--gris)}
+.carte-recap .ligne span:last-child{text-align:right}
+
+/* confirmation */
+.confirm{max-width:560px;margin:0 auto;text-align:center;padding:20px 0}
+.confirm .coche-ok{
+  width:74px;height:74px;border-radius:50%;margin:0 auto 18px;
+  background:rgba(229,168,25,.15);display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;
+}
+.confirm h2{font-size:1.7rem;margin-bottom:6px}
+.confirm .ref{font-family:'Marcellus',serif;font-size:2.6rem;color:var(--azur);margin:6px 0 4px}
+.confirm .detail{font-size:.9rem;color:var(--gris);margin-bottom:20px;line-height:1.6}
+.badge-statut{
+  display:inline-block;font-size:.75rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;padding:8px 16px;border-radius:999px;margin-bottom:20px;
+}
+.badge-statut.confirmee{background:rgba(47,158,68,.12);color:var(--ok)}
+.badge-statut.installee{background:rgba(43,125,179,.12);color:var(--azur)}
+.badge-statut.terminee{background:var(--sable2);color:var(--gris)}
+.badge-statut.annulee,.badge-statut.absent{background:rgba(179,57,47,.12);color:var(--rouge)}
+.btn-annul-rdv{
+  border:1px solid rgba(179,57,47,.4);background:transparent;color:var(--rouge);
+  border-radius:13px;padding:13px 20px;font-size:.88rem;font-weight:700;margin-top:10px;width:100%;
+}
+
+/* ============ VUE GÉRANT ============ */
+.entete-gerant{display:flex;align-items:center;gap:14px;padding:22px 0 18px;flex-wrap:wrap}
+.entete-gerant h1{font-size:1.5rem}
+.entete-gerant .sous{font-size:.72rem;color:var(--gris);letter-spacing:.14em;text-transform:uppercase}
+.pill-live{
+  margin-left:auto;font-size:.72rem;font-weight:700;color:var(--soleil);
+  background:rgba(229,168,25,.14);padding:7px 13px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;
+}
+.pill-live::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--soleil);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--blanc);border-radius:16px;padding:16px;box-shadow:var(--ombre)}
+.stat .valeur{font-family:'Marcellus',serif;font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.stat .valeur.azur{color:var(--azur)}
+.stat .libelle{font-size:.7rem;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-top:7px}
+.filtres-g{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;flex-wrap:wrap}
+.filtres-g::-webkit-scrollbar{display:none}
+.filtre-g{
+  flex:none;border:1px solid rgba(133,133,123,.35);background:var(--blanc);
+  border-radius:999px;padding:8px 16px;font-size:.82rem;font-weight:500;
+  display:flex;align-items:center;gap:7px;
+}
+.filtre-g.actif{background:var(--marine);color:var(--sable);border-color:var(--marine)}
+
+/* plan de salle */
+.plan{
+  background:var(--blanc);border-radius:18px;padding:18px;box-shadow:var(--ombre);
+  margin-bottom:22px;
+}
+.plan .titre-plan{
+  display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;
+}
+.plan .titre-plan h2{font-size:1.15rem}
+.plan .legende{margin-left:auto;display:flex;gap:14px;font-size:.72rem;color:var(--gris)}
+.plan .legende span{display:flex;align-items:center;gap:5px}
+.plan .legende i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.plan .legende .libre{background:rgba(47,158,68,.25);border:1px solid var(--ok)}
+.plan .legende .prise{background:rgba(229,168,25,.3);border:1px solid var(--soleil)}
+.plan .sous-plan{font-size:.78rem;color:var(--gris);margin-bottom:14px}
+.zone-plan{margin-bottom:16px}
+.zone-plan .nom-zone{
+  font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--azur);
+  font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.zone-plan.terrasse .nom-zone{color:var(--soleil)}
+.grille-tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.table-plan{
+  border-radius:14px;padding:12px;text-align:center;cursor:pointer;
+  border:2px solid rgba(47,158,68,.5);background:rgba(47,158,68,.08);
+  transition:all .15s;
+}
+.table-plan.prise{border-color:rgba(229,168,25,.6);background:rgba(229,168,25,.12)}
+.table-plan.filtree{outline:3px solid var(--azur);outline-offset:2px}
+.table-plan .num-table{font-family:'Marcellus',serif;font-size:1.2rem;line-height:1.2}
+.table-plan .cap{font-size:.72rem;color:var(--gris)}
+.table-plan .resa-chips{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.table-plan .resa-chip{
+  font-size:.68rem;font-weight:700;background:var(--blanc);
+  border:1px solid var(--sable2);border-radius:8px;padding:3px 6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* liste réservations */
+.vide-g{text-align:center;color:var(--gris);font-style:italic;padding:50px 0}
+.groupe-jour{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--azur);font-weight:700;margin:20px 0 10px}
+.carte-resa{
+  background:var(--blanc);border-radius:16px;padding:16px;margin-bottom:12px;
+  box-shadow:var(--ombre);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;
+  border-left:5px solid var(--ok);
+}
+.carte-resa.st-installee{border-left-color:var(--azur)}
+.carte-resa.st-terminee{border-left-color:#b0aa9c;opacity:.7}
+.carte-resa.st-annulee,.carte-resa.st-absent{border-left-color:var(--rouge);opacity:.55}
+.resa-heure{
+  font-family:'Marcellus',serif;font-size:1.4rem;line-height:1.1;
+  min-width:64px;font-variant-numeric:tabular-nums;
+}
+.resa-heure small{display:block;font-family:'Karla',sans-serif;font-size:.68rem;color:var(--gris)}
+.resa-infos{flex:1;min-width:200px}
+.resa-client{font-weight:700;font-size:.98rem}
+.resa-meta{font-size:.78rem;color:var(--gris)}
+.resa-detail{font-size:.85rem;margin-top:6px}
+.resa-note{
+  font-size:.78rem;background:rgba(229,168,25,.12);border-radius:9px;
+  padding:7px 11px;margin-top:8px;color:#8a6410;
+}
+.resa-droite{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-left:auto}
+.resa-statut{
+  font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  padding:5px 11px;border-radius:999px;
+}
+.resa-statut.confirmee{background:rgba(47,158,68,.12);color:var(--ok)}
+.resa-statut.installee{background:rgba(43,125,179,.12);color:var(--azur)}
+.resa-statut.terminee{background:var(--sable2);color:var(--gris)}
+.resa-statut.annulee,.resa-statut.absent{background:rgba(179,57,47,.1);color:var(--rouge)}
+.resa-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn-mini{
+  border:none;border-radius:10px;padding:9px 14px;font-size:.8rem;font-weight:700;color:#fff;
+  transition:transform .15s;
+}
+.btn-mini:active{transform:scale(.95)}
+.btn-mini.installer{background:var(--azur)}
+.btn-mini.terminer{background:var(--marine)}
+.btn-mini.absent{background:#c77d24}
+.btn-mini.annuler{background:transparent;border:1px solid rgba(179,57,47,.4);color:var(--rouge)}
+.note-bas{text-align:center;font-size:.72rem;color:var(--gris);padding:30px 0 0;line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- ==================== ÉCRAN DE PRÉSENTATION ==================== -->
+<div class="intro" id="intro">
+  <div class="badge">Maquette de démonstration</div>
+  <h1 class="titre-display">Votre terrasse,<br><span>toujours pleine.</span></h1>
+  <p class="sous">Vos clients réservent leur table en ligne, vous voyez votre terrasse et votre salle se remplir sur un plan clair, service par service.</p>
+  <div class="avantages">
+    <div class="avantage">
+      <div class="ico">📵</div>
+      <b>Plus de téléphone en plein service</b>
+      <p>Les clients réservent seuls, à toute heure. Le téléphone arrête de sonner pendant le coup de feu.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">🗺️</div>
+      <b>Le plan de table en un coup d'œil</b>
+      <p>Terrasse et salle sur un plan clair : qui arrive, à quelle heure, à quelle table. Fini le cahier raturé.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">🪑</div>
+      <b>La bonne table au bon groupe</b>
+      <p>Une table de 2 n'est plus bloquée par un couple quand un groupe de 6 appelle : l'attribution est automatique.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">⏰</div>
+      <b>Moins de tables vides</b>
+      <p>Confirmation immédiate et rappel SMS le jour J (version finale) : les no-shows se font rares.</p>
+    </div>
+  </div>
+  <div class="boutons">
+    <button class="btn-intro plein" onclick="fermerIntro('client')">⛱️ Voir côté client</button>
+    <button class="btn-intro ligne" onclick="fermerIntro('gerant')">🗺️ Voir côté restaurant</button>
+  </div>
+  <div class="note">Maquette interactive — une table réservée côté client apparaît instantanément sur le plan du restaurant.<br>Nom, plan des tables, horaires et services : tout est personnalisable à votre établissement.</div>
+</div>
+
+<!-- ==================== BARRE DE DÉMO ==================== -->
+<div class="barre-demo">
+  <span class="demo-tag">Démo</span>
+  <div class="sep"></div>
+  <button id="onglet-client" class="actif" onclick="changerVue('client')">⛱️ Client</button>
+  <button id="onglet-gerant" onclick="changerVue('gerant')">🗺️ Restaurant</button>
+</div>
+
+<!-- ==================== VUE CLIENT ==================== -->
+<div class="vue actif" id="vue-client">
+  <header class="entete-client">
+    <div class="logo-rond">⛱️</div>
+    <div>
+      <h1 class="titre-display">Les Terrasses</h1>
+      <div class="sous">Votre enseigne ici</div>
+    </div>
+    <div class="pill-ouvert">Midi 12h–14h · Soir 19h–22h</div>
+  </header>
+
+  <div class="hero">
+    <h2 class="titre-display">Réservez votre table<br><span>au soleil.</span></h2>
+    <p>Sans appel, sans attente · Confirmation immédiate</p>
+  </div>
+
+  <div class="fil-etapes" id="fil-etapes"></div>
+
+  <!-- Étape 1 : personnes + zone -->
+  <div class="bloc-etape actif" id="etape-1">
+    <div class="titre-etape"><span class="num">Étape 1/4</span><h2 class="titre-display">Votre table</h2></div>
+    <div class="sous-cat">Nombre de personnes</div>
+    <div class="grille-pers" id="grille-pers"></div>
+    <div class="note-groupe">Plus de 8 personnes ? Appelez-nous, on pousse les tables 😉</div>
+    <div class="sous-cat">Où souhaitez-vous être installés ?</div>
+    <div class="grille-zones" id="grille-zones"></div>
+    <div class="barre-suite">
+      <div class="recap" id="recap-1">Choisissez le nombre de personnes.</div>
+      <button class="btn-principal" id="btn-suite-1" disabled onclick="allerEtape(2)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- Étape 2 : date + créneau -->
+  <div class="bloc-etape" id="etape-2">
+    <div class="titre-etape"><span class="num">Étape 2/4</span><h2 class="titre-display">Date & heure</h2></div>
+    <div class="bande-jours" id="bande-jours"></div>
+    <div class="info-duree" id="info-duree"></div>
+    <div class="sous-cat">☀️ Service du midi</div>
+    <div class="grille-creneaux" id="creneaux-midi"></div>
+    <div class="sous-cat">🌙 Service du soir</div>
+    <div class="grille-creneaux" id="creneaux-soir"></div>
+    <div class="barre-suite">
+      <button class="btn-retour" onclick="allerEtape(1)">← Retour</button>
+      <div class="recap" id="recap-2">Choisissez un créneau.</div>
+      <button class="btn-principal" id="btn-suite-2" disabled onclick="allerEtape(3)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- Étape 3 : coordonnées -->
+  <div class="bloc-etape" id="etape-3">
+    <div class="titre-etape"><span class="num">Étape 3/4</span><h2 class="titre-display">Vos coordonnées</h2></div>
+    <div class="carte-recap" id="carte-recap"></div>
+    <div class="deux-col">
+      <div class="champ"><label>Nom *</label><input id="f-nom" placeholder="Ex : Famille Benali"></div>
+      <div class="champ"><label>Téléphone *</label><input id="f-tel" inputmode="tel" placeholder="06 12 34 56 78"></div>
+    </div>
+    <div class="champ"><label>Une demande particulière ? (facultatif)</label>
+      <textarea id="f-note" rows="2" placeholder="Ex : anniversaire, chaise bébé, à l'ombre…"></textarea>
+    </div>
+    <button class="btn-principal large" onclick="validerResa()">Confirmer la réservation</button>
+    <button class="btn-secondaire" onclick="allerEtape(2)">← Retour</button>
+  </div>
+
+  <!-- Étape 4 : confirmation -->
+  <div class="bloc-etape" id="etape-4"></div>
+
+  <div class="note-bas">Maquette de démonstration — plan des tables et horaires donnés à titre d'exemple.</div>
+</div>
+
+<!-- ==================== VUE GÉRANT ==================== -->
+<div class="vue" id="vue-gerant">
+  <header class="entete-gerant">
+    <div class="logo-rond">🗺️</div>
+    <div>
+      <h1 class="titre-display">Plan & réservations</h1>
+      <div class="sous">Les Terrasses — Gestion</div>
+    </div>
+    <div class="pill-live">En direct</div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="plan">
+    <div class="titre-plan">
+      <h2 class="titre-display">🗺️ Plan des tables</h2>
+      <div class="legende">
+        <span><i class="libre"></i> Libre</span>
+        <span><i class="prise"></i> Réservée</span>
+      </div>
+    </div>
+    <div class="sous-plan" id="sous-plan"></div>
+    <nav class="filtres-g" id="filtres-plan"></nav>
+    <div id="zones-plan"></div>
+  </div>
+
+  <nav class="filtres-g" id="filtres-jours"></nav>
+  <div id="liste-resa"></div>
+
+  <div class="note-bas">Dans la version finale : accès protégé par code, rappels SMS le jour J, réservations par téléphone<br>ajoutées au même plan, gestion des groupes et privatisations.</div>
+</div>
+
+<script>
+/* =====================================================
+   DONNÉES DE LA MAQUETTE (plan d'exemple, personnalisable)
+===================================================== */
+const TABLES = [
+  {id:'T1', zone:'terrasse', places:2},
+  {id:'T2', zone:'terrasse', places:2},
+  {id:'T3', zone:'terrasse', places:4},
+  {id:'T4', zone:'terrasse', places:4},
+  {id:'T5', zone:'terrasse', places:6},
+  {id:'T6', zone:'terrasse', places:8},
+  {id:'S1', zone:'salle', places:2},
+  {id:'S2', zone:'salle', places:4},
+  {id:'S3', zone:'salle', places:4},
+  {id:'S4', zone:'salle', places:6},
+];
+const ZONES = [
+  {id:'terrasse',   nom:'Terrasse',   ico:'⛱️', det:'Au soleil, vue sur la place'},
+  {id:'salle',      nom:'Salle',      ico:'🏠', det:'Au frais, climatisée'},
+  {id:'peu-importe',nom:'Peu importe',ico:'🎲', det:'La première table libre'},
+];
+// services : début/fin de la dernière arrivée, en minutes
+const SERVICES = [
+  {id:'midi', debut:12*60, fin:14*60},
+  {id:'soir', debut:19*60, fin:22*60},
+];
+const PAS = 30, DUREE_TABLE = 90; // une table reste occupée 1h30
+const STATUTS = {
+  confirmee:{nom:'Confirmée'},
+  installee:{nom:'Installée'},
+  terminee:{nom:'Terminée'},
+  annulee:{nom:'Annulée'},
+  absent:{nom:'Absents'},
+};
+
+/* =====================================================
+   ÉTAT
+===================================================== */
+const CLE = 'maquette_terrasses_resa';
+let sel = {pers:null, zone:null, date:null, heure:null};
+let derniereResa = null;
+let filtreJour = 'auj', planDate = null, planService = 'soir', tableFiltree = null;
+
+function chargerResa(){ try{ return JSON.parse(localStorage.getItem(CLE)) || null }catch(e){ return null } }
+function sauverResa(l){ try{ localStorage.setItem(CLE, JSON.stringify(l)) }catch(e){} }
+
+const cleJour = d => d.toISOString().slice(0,10);
+function joursAvenir(n){
+  const res = [];
+  for(let i=0;i<n;i++){ const d=new Date(); d.setDate(d.getDate()+i); res.push(d); }
+  return res;
+}
+const JOURS_FR = ['dim','lun','mar','mer','jeu','ven','sam'];
+const MOIS_FR = ['janv','févr','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
+function jolieDate(iso){
+  const d = new Date(iso+'T12:00:00');
+  if(iso===cleJour(new Date())) return "aujourd'hui";
+  if(iso===cleJour(new Date(Date.now()+86400000))) return 'demain';
+  return `${JOURS_FR[d.getDay()]}. ${d.getDate()} ${MOIS_FR[d.getMonth()]}`;
+}
+const minutes = h => { const [a,b]=h.split(':').map(Number); return a*60+b; };
+const enHeure = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+const jolieHeure = h => h.replace(':','h');
+const serviceDe = h => minutes(h) < 17*60 ? 'midi' : 'soir';
+
+function initDemo(){
+  if(chargerResa()) return;
+  const j = joursAvenir(3).map(cleJour);
+  sauverResa([
+    {ref:22, nom:'Famille Benali', tel:'06 12 34 56 78', pers:4, table:'T3', date:j[0], heure:'12:30',
+     note:'Chaise bébé', statut:'confirmee', ts:Date.now()},
+    {ref:21, nom:'M. Fontaine', tel:'07 98 76 54 32', pers:2, table:'T1', date:j[0], heure:'20:00',
+     note:'', statut:'confirmee', ts:Date.now()},
+    {ref:20, nom:'Anniv. Léa', tel:'06 55 44 33 22', pers:8, table:'T6', date:j[0], heure:'20:30',
+     note:'Anniversaire — prévoir bougies 🎂', statut:'confirmee', ts:Date.now()},
+    {ref:19, nom:'Mme Costa', tel:'06 44 55 66 77', pers:2, table:'S1', date:j[1], heure:'12:00',
+     note:'', statut:'confirmee', ts:Date.now()},
+    {ref:18, nom:'M. Girard', tel:'06 22 33 44 55', pers:4, table:'S2', date:j[0], heure:'12:00',
+     note:'', statut:'terminee', ts:Date.now()},
+  ]);
+}
+
+/* =====================================================
+   DISPONIBILITÉS
+===================================================== */
+function occupeTable(tableId, dateIso){
+  return (chargerResa()||[])
+    .filter(r=>r.table===tableId && r.date===dateIso && ['confirmee','installee'].includes(r.statut))
+    .map(r=>[minutes(r.heure), minutes(r.heure)+DUREE_TABLE]);
+}
+function tableLibre(tableId, dateIso, debut){
+  const fin = debut + DUREE_TABLE;
+  return !occupeTable(tableId, dateIso).some(([d,f]) => debut < f && fin > d);
+}
+function tablesPossibles(zone, pers){
+  let t = TABLES.filter(x=>x.places>=pers);
+  if(zone!=='peu-importe') t = t.filter(x=>x.zone===zone);
+  return t.sort((a,b)=>a.places-b.places); // la plus petite qui convient d'abord
+}
+function trouverTable(zone, pers, dateIso, debut){
+  return tablesPossibles(zone, pers).find(t=>tableLibre(t.id, dateIso, debut)) || null;
+}
+function creneauxService(svc, dateIso, zone, pers){
+  const res = [];
+  const auj = cleJour(new Date());
+  const mtn = new Date();
+  const minAuj = mtn.getHours()*60 + mtn.getMinutes();
+  for(let m=svc.debut; m<=svc.fin; m+=PAS){
+    if(dateIso===auj && m <= minAuj){ continue; }
+    res.push({heure:enHeure(m), dispo: !!trouverTable(zone, pers, dateIso, m)});
+  }
+  return res;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function fermerIntro(vue){
+  document.getElementById('intro').style.display='none';
+  changerVue(vue);
+}
+function changerVue(vue){
+  document.getElementById('vue-client').classList.toggle('actif', vue==='client');
+  document.getElementById('vue-gerant').classList.toggle('actif', vue==='gerant');
+  document.getElementById('onglet-client').classList.toggle('actif', vue==='client');
+  document.getElementById('onglet-gerant').classList.toggle('actif', vue==='gerant');
+  if(vue==='gerant') rendreGerant();
+  window.scrollTo(0,0);
+}
+function allerEtape(n){
+  for(let i=1;i<=4;i++){
+    const bloc = document.getElementById('etape-'+i);
+    if(bloc) bloc.classList.toggle('actif', i===n);
+  }
+  document.getElementById('fil-etapes').innerHTML =
+    [1,2,3].map(i=>`<div class="pas ${i<=n?'fait':''}"></div>`).join('');
+  if(n===2) rendreCreneaux();
+  if(n===3) rendreRecapFinal();
+  window.scrollTo(0,0);
+}
+
+/* =====================================================
+   ÉTAPE 1 — PERSONNES + ZONE
+===================================================== */
+function rendreEtape1(){
+  document.getElementById('grille-pers').innerHTML = [1,2,3,4,5,6,7,8].map(n=>`
+    <button class="pers ${sel.pers===n?'choisi':''}" onclick="sel.pers=${n};sel.heure=null;rendreEtape1()">
+      <div class="chiffre">${n}</div><div class="lab">pers${n>1?'.':''}</div>
+    </button>`).join('');
+  document.getElementById('grille-zones').innerHTML = ZONES.map(z=>`
+    <div class="zone ${sel.zone===z.id?'choisi':''}" onclick="sel.zone='${z.id}';sel.heure=null;rendreEtape1()">
+      <div class="ico">${z.ico}</div>
+      <div class="nom">${z.nom}</div>
+      <div class="det">${z.det}</div>
+    </div>`).join('');
+  const z = ZONES.find(x=>x.id===sel.zone);
+  document.getElementById('recap-1').innerHTML = (sel.pers && z)
+    ? `<b>${sel.pers} personne${sel.pers>1?'s':''} · ${z.nom}</b>Table gardée 1h30`
+    : sel.pers ? 'Choisissez une zone.' : 'Choisissez le nombre de personnes.';
+  document.getElementById('btn-suite-1').disabled = !(sel.pers && sel.zone);
+}
+
+/* =====================================================
+   ÉTAPE 2 — DATE & CRÉNEAU
+===================================================== */
+function rendreCreneaux(){
+  const jours = joursAvenir(7);
+  if(!sel.date) sel.date = cleJour(jours[0]);
+  document.getElementById('bande-jours').innerHTML = jours.map(d=>{
+    const iso = cleJour(d);
+    return `<button class="jour ${iso===sel.date?'choisi':''}" onclick="sel.date='${iso}';sel.heure=null;rendreCreneaux()">
+      <div class="semaine">${JOURS_FR[d.getDay()]}</div>
+      <div class="chiffre">${d.getDate()}</div>
+      <div class="mois">${MOIS_FR[d.getMonth()]}</div>
+    </button>`;
+  }).join('');
+  document.getElementById('info-duree').textContent =
+    `🪑 Table pour ${sel.pers} · les horaires barrés sont complets pour ce nombre de personnes.`;
+  SERVICES.forEach(svc=>{
+    const creneaux = creneauxService(svc, sel.date, sel.zone, sel.pers);
+    const cible = document.getElementById('creneaux-'+svc.id);
+    cible.innerHTML = creneaux.every(c=>!c.dispo)
+      ? `<div class="aucun-creneau" style="grid-column:1/-1">Service complet — essayez un autre jour 🙏</div>`
+      : creneaux.map(c=>`
+        <button class="creneau ${c.heure===sel.heure?'choisi':''}" ${c.dispo?'':'disabled'}
+          onclick="sel.heure='${c.heure}';rendreCreneaux()">${jolieHeure(c.heure)}</button>`).join('');
+  });
+  document.getElementById('recap-2').innerHTML = sel.heure
+    ? `<b>${jolieDate(sel.date)} à ${jolieHeure(sel.heure)}</b>${sel.pers} pers. · ${ZONES.find(z=>z.id===sel.zone).nom}`
+    : 'Choisissez un créneau.';
+  document.getElementById('btn-suite-2').disabled = !sel.heure;
+}
+
+/* =====================================================
+   ÉTAPE 3 — RÉCAP & VALIDATION
+===================================================== */
+function rendreRecapFinal(){
+  const z = ZONES.find(x=>x.id===sel.zone);
+  document.getElementById('carte-recap').innerHTML = `
+    <div class="ligne"><span>Table</span><span>${sel.pers} personne${sel.pers>1?'s':''} · ${z.nom}</span></div>
+    <div class="ligne"><span>Date</span><span>${jolieDate(sel.date)} à ${jolieHeure(sel.heure)}</span></div>
+    <div class="ligne"><span>Service</span><span>${serviceDe(sel.heure)==='midi'?'☀️ Midi':'🌙 Soir'}</span></div>
+    <div class="ligne"><span>Table gardée</span><span>1h30</span></div>`;
+}
+function validerResa(){
+  const nom = document.getElementById('f-nom').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  if(!nom || !tel){
+    document.getElementById('f-nom').style.borderColor = nom?'':'var(--rouge)';
+    document.getElementById('f-tel').style.borderColor = tel?'':'var(--rouge)';
+    return;
+  }
+  const table = trouverTable(sel.zone, sel.pers, sel.date, minutes(sel.heure));
+  if(!table){ sel.heure=null; allerEtape(2); return; } // créneau pris entre-temps
+  const liste = chargerResa() || [];
+  const ref = liste.reduce((m,r)=>Math.max(m,r.ref), 22) + 1;
+  liste.unshift({
+    ref, nom, tel, pers:sel.pers, table:table.id, date:sel.date, heure:sel.heure,
+    note:document.getElementById('f-note').value.trim(),
+    statut:'confirmee', ts:Date.now(),
+  });
+  sauverResa(liste);
+  derniereResa = ref;
+  rendreConfirmation();
+}
+function rendreConfirmation(){
+  const r = (chargerResa()||[]).find(x=>x.ref===derniereResa);
+  if(!r) return;
+  const t = TABLES.find(x=>x.id===r.table);
+  const st = STATUTS[r.statut];
+  const active = ['confirmee','installee'].includes(r.statut);
+  document.getElementById('etape-4').innerHTML = `
+    <div class="confirm">
+      <div class="coche-ok">${active?'⛱️':r.statut==='terminee'?'✅':'🚫'}</div>
+      <h2 class="titre-display">${r.statut==='annulee'?'Réservation annulée':'Table réservée !'}</h2>
+      <div class="ref">Résa n° ${r.ref}</div>
+      <div class="detail">
+        ${r.pers} personne${r.pers>1?'s':''} · ${t.zone==='terrasse'?'⛱️ Terrasse':'🏠 Salle'}<br>
+        <b>${jolieDate(r.date)} à ${jolieHeure(r.heure)}</b><br>
+        Au nom de ${r.nom} · table gardée 1h30
+      </div>
+      <div class="badge-statut ${r.statut}">${st.nom}</div>
+      <div class="detail">Dans la version finale, vous recevrez un SMS de confirmation<br>et un rappel le jour J.</div>
+      ${r.statut==='confirmee'?`<button class="btn-annul-rdv" onclick="annulerParClient()">Annuler ma réservation</button>`:''}
+      <button class="btn-secondaire" onclick="nouvelleResa()">Réserver une autre table</button>
+    </div>`;
+  allerEtape(4);
+  document.getElementById('fil-etapes').innerHTML = [1,2,3].map(()=>'<div class="pas fait"></div>').join('');
+}
+function annulerParClient(){
+  const liste = chargerResa() || [];
+  const r = liste.find(x=>x.ref===derniereResa);
+  if(r){ r.statut='annulee'; sauverResa(liste); rendreConfirmation(); }
+}
+function nouvelleResa(){
+  sel = {pers:null, zone:null, date:null, heure:null};
+  document.getElementById('f-nom').value='';
+  document.getElementById('f-tel').value='';
+  document.getElementById('f-note').value='';
+  rendreEtape1();
+  allerEtape(1);
+}
+
+/* =====================================================
+   VUE GÉRANT
+===================================================== */
+function rendreGerant(){
+  const liste = chargerResa() || [];
+  const auj = cleJour(new Date());
+  const actifs = r => !['annulee','absent'].includes(r.statut);
+  const resaAuj = liste.filter(r=>r.date===auj && actifs(r));
+  const couvertsAuj = resaAuj.reduce((s,r)=>s+r.pers,0);
+  const couvertsSoir = resaAuj.filter(r=>serviceDe(r.heure)==='soir').reduce((s,r)=>s+r.pers,0);
+  const aVenir = liste.filter(r=>r.statut==='confirmee').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="valeur">${resaAuj.length}</div><div class="libelle">Réservations aujourd'hui</div></div>
+    <div class="stat"><div class="valeur azur">${couvertsAuj}</div><div class="libelle">Couverts aujourd'hui</div></div>
+    <div class="stat"><div class="valeur">${couvertsSoir}</div><div class="libelle">Couverts ce soir</div></div>
+    <div class="stat"><div class="valeur">${aVenir}</div><div class="libelle">À venir (7 jours)</div></div>`;
+  rendrePlan();
+  rendreListeResa();
+}
+
+/* ----- plan de salle ----- */
+function rendrePlan(){
+  if(!planDate) planDate = cleJour(new Date());
+  const jours = joursAvenir(3).map(cleJour);
+  const filtres = [];
+  jours.forEach(iso=>filtres.push(['j:'+iso, jolieDate(iso)]));
+  filtres.push(['s:midi','☀️ Midi'],['s:soir','🌙 Soir']);
+  document.getElementById('filtres-plan').innerHTML = filtres.map(([id,nom])=>{
+    const actif = id==='j:'+planDate || id==='s:'+planService;
+    return `<button class="filtre-g ${actif?'actif':''}" onclick="filtrePlan('${id}')">${nom}</button>`;
+  }).join('');
+  document.getElementById('sous-plan').textContent =
+    `Réservations ${jolieDate(planDate)} · service du ${planService==='midi'?'midi':'soir'} — touchez une table pour filtrer la liste.`;
+  const liste = (chargerResa()||[]).filter(r=>
+    r.date===planDate && serviceDe(r.heure)===planService && ['confirmee','installee'].includes(r.statut));
+  const zones = [
+    {id:'terrasse', nom:'⛱️ Terrasse', cls:'terrasse'},
+    {id:'salle', nom:'🏠 Salle', cls:'salle'},
+  ];
+  document.getElementById('zones-plan').innerHTML = zones.map(z=>`
+    <div class="zone-plan ${z.cls}">
+      <div class="nom-zone">${z.nom}</div>
+      <div class="grille-tables">
+        ${TABLES.filter(t=>t.zone===z.id).map(t=>{
+          const resas = liste.filter(r=>r.table===t.id).sort((a,b)=>minutes(a.heure)-minutes(b.heure));
+          return `<div class="table-plan ${resas.length?'prise':''} ${tableFiltree===t.id?'filtree':''}" onclick="filtrerTable('${t.id}')">
+            <div class="num-table">${t.id}</div>
+            <div class="cap">👤 ${t.places} places</div>
+            ${resas.length?`<div class="resa-chips">${resas.map(r=>
+              `<div class="resa-chip">${jolieHeure(r.heure)} · ${r.nom}</div>`).join('')}</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+function filtrePlan(id){
+  if(id.startsWith('j:')) planDate = id.slice(2);
+  else planService = id.slice(2);
+  tableFiltree = null;
+  rendrePlan(); rendreListeResa();
+}
+function filtrerTable(id){
+  tableFiltree = tableFiltree===id ? null : id;
+  rendrePlan(); rendreListeResa();
+}
+
+/* ----- liste des réservations ----- */
+function rendreListeResa(){
+  const liste = chargerResa() || [];
+  const auj = cleJour(new Date());
+  const dem = cleJour(new Date(Date.now()+86400000));
+  const filtres = [['auj',"Aujourd'hui"],['dem','Demain'],['tous','7 jours']];
+  document.getElementById('filtres-jours').innerHTML = filtres.map(([id,nom])=>
+    `<button class="filtre-g ${filtreJour===id?'actif':''}" onclick="filtreJour='${id}';tableFiltree=null;rendrePlan();rendreListeResa()">${nom}</button>`).join('');
+  let visibles = liste.filter(r=>{
+    if(filtreJour==='auj' && r.date!==auj) return false;
+    if(filtreJour==='dem' && r.date!==dem) return false;
+    if(tableFiltree && r.table!==tableFiltree) return false;
+    return true;
+  }).sort((a,b)=> a.date===b.date ? minutes(a.heure)-minutes(b.heure) : a.date.localeCompare(b.date));
+  if(!visibles.length){
+    document.getElementById('liste-resa').innerHTML =
+      `<div class="vide-g">Aucune réservation ici.<br>Réservez côté client pour voir le plan se remplir ✨</div>`;
+    return;
+  }
+  let html = '', jourCourant = '';
+  visibles.forEach(r=>{
+    if(r.date!==jourCourant){
+      jourCourant = r.date;
+      html += `<div class="groupe-jour">${jolieDate(r.date)}</div>`;
+    }
+    html += carteResa(r);
+  });
+  document.getElementById('liste-resa').innerHTML = html;
+}
+function carteResa(r){
+  const t = TABLES.find(x=>x.id===r.table);
+  const st = STATUTS[r.statut];
+  let actions = '';
+  if(r.statut==='confirmee'){
+    actions = `
+      <button class="btn-mini installer" onclick="statutResa(${r.ref},'installee')">🪑 Installés</button>
+      <button class="btn-mini absent" onclick="statutResa(${r.ref},'absent')">Absents</button>
+      <button class="btn-mini annuler" onclick="statutResa(${r.ref},'annulee')">Annuler</button>`;
+  } else if(r.statut==='installee'){
+    actions = `<button class="btn-mini terminer" onclick="statutResa(${r.ref},'terminee')">✓ Table libérée</button>`;
+  }
+  return `<div class="carte-resa st-${r.statut}">
+    <div class="resa-heure">${jolieHeure(r.heure)}<small>${serviceDe(r.heure)==='midi'?'☀️ midi':'🌙 soir'}</small></div>
+    <div class="resa-infos">
+      <div class="resa-client">${r.nom} · ${r.tel}</div>
+      <div class="resa-meta">Résa n° ${r.ref} · réservée en ligne</div>
+      <div class="resa-detail">👥 ${r.pers} personne${r.pers>1?'s':''} · Table <b>${r.table}</b> (${t.zone==='terrasse'?'⛱️ terrasse':'🏠 salle'})</div>
+      ${r.note?`<div class="resa-note">📝 ${r.note}</div>`:''}
+    </div>
+    <div class="resa-droite">
+      <span class="resa-statut ${r.statut}">${st.nom}</span>
+      <div class="resa-actions">${actions}</div>
+    </div>
+  </div>`;
+}
+function statutResa(ref, statut){
+  const liste = chargerResa() || [];
+  const r = liste.find(x=>x.ref===ref);
+  if(r){ r.statut=statut; sauverResa(liste); rendreGerant(); }
+}
+
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
+initDemo();
+rendreEtape1();
+allerEtape(1);
+</script>
+</body>
+</html>
