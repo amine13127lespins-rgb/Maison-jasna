@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /commandes.html
+
+Sitemap: https://maisonjasna.fr/sitemap.xml
