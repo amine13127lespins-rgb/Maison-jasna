@@ -123,6 +123,12 @@ nav.haut .liens a:hover{color:var(--texte)}
 .btn-hero:hover{transform:translateY(-3px)}
 .btn-hero.plein{background:var(--degrade);color:#fff;box-shadow:0 16px 44px rgba(124,92,255,.45)}
 .btn-hero.ligne{border:1px solid var(--bord);background:var(--carte);color:var(--texte)}
+.hero-visuel{
+  margin:52px auto 0;max-width:980px;
+  border-radius:24px;overflow:hidden;border:1px solid var(--bord);
+  box-shadow:0 40px 120px rgba(124,92,255,.25),0 20px 60px rgba(0,0,0,.6);
+}
+.hero-visuel img{display:block;width:100%;height:auto}
 .hero .chiffres{
   display:flex;gap:34px;justify-content:center;flex-wrap:wrap;margin-top:52px;
 }
@@ -153,10 +159,14 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .projet:hover{transform:translateY(-6px);border-color:rgba(124,92,255,.45);box-shadow:0 24px 60px rgba(0,0,0,.45)}
 .projet .apercu{
-  height:220px;position:relative;overflow:hidden;
+  position:relative;overflow:hidden;aspect-ratio:3/2;
   border-bottom:1px solid var(--bord);
-  display:flex;align-items:flex-end;justify-content:center;
 }
+.projet .apercu img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  transition:transform .5s ease;
+}
+.projet:hover .apercu img{transform:scale(1.045)}
 .projet .corps{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
 .projet .tag{
   align-self:flex-start;font-size:.62rem;font-weight:800;letter-spacing:.2em;
@@ -170,64 +180,6 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .projet .ouvrir:hover{gap:12px}
 .projet .ouvrir::after{content:'→'}
-
-/* mini écran de téléphone (aperçu statique) */
-.mini-tel{
-  width:190px;border-radius:22px 22px 0 0;
-  border:2px solid rgba(255,255,255,.14);border-bottom:none;
-  background:#0d0f16;padding:14px 13px 0;
-  display:flex;flex-direction:column;gap:8px;
-  transform:translateY(10px);
-  transition:transform .35s ease;
-  box-shadow:0 -14px 50px rgba(0,0,0,.5);
-}
-.projet:hover .mini-tel{transform:translateY(2px)}
-.mini-tel .encoche{width:46px;height:5px;border-radius:99px;background:rgba(255,255,255,.14);margin:0 auto 2px}
-.mini-tel .entete-app{display:flex;align-items:center;gap:7px}
-.mini-tel .entete-app .pico{
-  width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:.7rem;flex:none;
-}
-.mini-tel .entete-app .lignes i{display:block;height:5px;border-radius:99px;background:rgba(255,255,255,.16)}
-.mini-tel .entete-app .lignes i:first-child{width:64px;margin-bottom:4px}
-.mini-tel .entete-app .lignes i:last-child{width:40px;opacity:.55}
-.rangee{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
-  border-radius:11px;padding:8px 9px;
-}
-.rangee .ico-r{font-size:.95rem;flex:none}
-.rangee .txt-r{flex:1}
-.rangee .txt-r i{display:block;height:4px;border-radius:99px;background:rgba(255,255,255,.18)}
-.rangee .txt-r i:first-child{width:70%;margin-bottom:4px}
-.rangee .txt-r i:last-child{width:45%;opacity:.5}
-.rangee .val-r{font-size:.62rem;font-weight:800;flex:none}
-.mini-btn{
-  border-radius:11px;padding:9px;text-align:center;
-  font-size:.64rem;font-weight:800;letter-spacing:.08em;color:#fff;
-}
-.mini-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.mini-slot{
-  border-radius:8px;padding:6px 2px;text-align:center;font-size:.58rem;font-weight:800;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--texte2);
-}
-.mini-slot.pris{opacity:.35;text-decoration:line-through}
-.mini-plan-ap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px 4px}
-.mini-table-ap{
-  aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:1rem;
-  border:2px solid rgba(47,158,68,.5);background:rgba(47,158,68,.1);
-}
-.mini-table-ap.prise{border-color:rgba(251,191,36,.55);background:rgba(251,191,36,.12)}
-.badge-ap{
-  position:absolute;top:14px;right:14px;
-  font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  background:rgba(0,0,0,.4);border:1px solid var(--bord);border-radius:999px;
-  padding:6px 12px;color:var(--texte2);backdrop-filter:blur(6px);
-}
-/* fonds colorés des aperçus */
-.ap-snack{background:radial-gradient(circle at 50% 120%,rgba(232,89,12,.35),transparent 60%),#171320}
-.ap-coiffeur{background:radial-gradient(circle at 50% 120%,rgba(31,92,77,.5),transparent 62%),#121a17}
-.ap-terrasses{background:radial-gradient(circle at 50% 120%,rgba(43,125,179,.45),transparent 60%),#0f1722}
-.ap-appel{background:radial-gradient(circle at 50% 120%,rgba(140,49,64,.5),transparent 60%),#191014}
 
 /* ---------- process ---------- */
 .etapes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
@@ -315,6 +267,9 @@ nav.haut .liens a:hover{color:var(--texte)}
     <a class="btn-hero plein" href="#projets">Découvrir les projets</a>
     <a class="btn-hero ligne" href="#tarifs">Voir les tarifs</a>
   </div>
+  <div class="hero-visuel revele">
+    <img src="visuel-hero.webp" alt="Trois solutions pour moderniser votre restaurant : appel serveur, commande en ligne et réservation de table par QR code">
+  </div>
   <div class="chiffres">
     <div class="chiffre"><div class="val" data-compte="4">0</div><div class="lab">Solutions prêtes</div></div>
     <div class="chiffre"><div class="val" data-compte="30" data-suffixe="s">0</div><div class="lab">Pour commander</div></div>
@@ -338,19 +293,8 @@ nav.haut .liens a:hover{color:var(--texte)}
 
     <!-- SNACK -->
     <article class="projet revele">
-      <div class="apercu ap-snack">
-        <div class="badge-ap">Aperçu</div>
-        <div class="mini-tel">
-          <div class="encoche"></div>
-          <div class="entete-app">
-            <span class="pico" style="background:linear-gradient(135deg,#e8590c,#ff8b3d)">🍔</span>
-            <span class="lignes"><i></i><i></i></span>
-          </div>
-          <div class="rangee"><span class="ico-r">🌯</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">7,50&nbsp;€</span></div>
-          <div class="rangee"><span class="ico-r">🍔</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">9,90&nbsp;€</span></div>
-          <div class="rangee"><span class="ico-r">🍟</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">3,00&nbsp;€</span></div>
-          <div class="mini-btn" style="background:linear-gradient(135deg,#e8590c,#ff8b3d)">COMMANDER · 20,40&nbsp;€</div>
-        </div>
+      <div class="apercu">
+        <img src="visuel-snack.webp" alt="Le Snack — commande en ligne sur téléphone avec chevalet QR code">
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(232,89,12,.14);color:#ff8b3d">Commande en ligne</span>
@@ -362,21 +306,8 @@ nav.haut .liens a:hover{color:var(--texte)}
 
     <!-- COIFFEUR -->
     <article class="projet revele">
-      <div class="apercu ap-coiffeur">
-        <div class="badge-ap">Aperçu</div>
-        <div class="mini-tel">
-          <div class="encoche"></div>
-          <div class="entete-app">
-            <span class="pico" style="background:linear-gradient(135deg,#1f5c4d,#2e7d68)">💈</span>
-            <span class="lignes"><i></i><i></i></span>
-          </div>
-          <div class="rangee"><span class="ico-r">✂️</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#5cc9a7">26&nbsp;€</span></div>
-          <div class="mini-grille">
-            <span class="mini-slot pris">9h00</span><span class="mini-slot">9h30</span><span class="mini-slot">10h00</span>
-            <span class="mini-slot">10h30</span><span class="mini-slot pris">11h00</span><span class="mini-slot">11h30</span>
-          </div>
-          <div class="mini-btn" style="background:linear-gradient(135deg,#1f5c4d,#2e7d68)">RÉSERVER · SAM. 10H30</div>
-        </div>
+      <div class="apercu">
+        <img src="visuel-coiffeur.webp" alt="Le Salon — réservation de prestation coiffeur sur téléphone avec chevalet QR code">
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(46,125,104,.16);color:#5cc9a7">Rendez-vous</span>
@@ -388,20 +319,8 @@ nav.haut .liens a:hover{color:var(--texte)}
 
     <!-- TERRASSES -->
     <article class="projet revele">
-      <div class="apercu ap-terrasses">
-        <div class="badge-ap">Aperçu</div>
-        <div class="mini-tel">
-          <div class="encoche"></div>
-          <div class="entete-app">
-            <span class="pico" style="background:linear-gradient(135deg,#123f5c,#2b7db3)">⛱️</span>
-            <span class="lignes"><i></i><i></i></span>
-          </div>
-          <div class="mini-plan-ap">
-            <span class="mini-table-ap prise">⛱️</span><span class="mini-table-ap">🪑</span><span class="mini-table-ap prise">⛱️</span>
-            <span class="mini-table-ap">🪑</span><span class="mini-table-ap prise">⛱️</span><span class="mini-table-ap">🪑</span>
-          </div>
-          <div class="mini-btn" style="background:linear-gradient(135deg,#2b7db3,#3f96cf)">RÉSERVER · CE SOIR 20H</div>
-        </div>
+      <div class="apercu">
+        <img src="visuel-terrasses.webp" alt="Les Terrasses — réservation de table sur téléphone avec chevalet QR code">
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(43,125,179,.16);color:#5eb2e6">Réservation de table</span>
@@ -413,20 +332,8 @@ nav.haut .liens a:hover{color:var(--texte)}
 
     <!-- APPEL SERVEUR -->
     <article class="projet revele">
-      <div class="apercu ap-appel">
-        <div class="badge-ap">Aperçu</div>
-        <div class="mini-tel">
-          <div class="encoche"></div>
-          <div class="entete-app">
-            <span class="pico" style="background:linear-gradient(135deg,#6e2431,#8c3140)">🍷</span>
-            <span class="lignes"><i></i><i></i></span>
-          </div>
-          <div class="rangee" style="justify-content:center;padding:12px"><span style="font-size:1.6rem">🛎️</span></div>
-          <div class="mini-btn" style="background:linear-gradient(135deg,#6e2431,#8c3140)">APPELER LE SERVEUR</div>
-          <div class="mini-grille" style="grid-template-columns:1fr 1fr">
-            <span class="mini-slot">🧾 Addition</span><span class="mini-slot">💧 Carafe</span>
-          </div>
-        </div>
+      <div class="apercu">
+        <img src="visuel-appel.webp" alt="Appel Serveur — bouton d'appel sur téléphone avec chevalet QR code">
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(140,49,64,.2);color:#f08a9b">QR code à table</span>
