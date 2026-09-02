@@ -18,7 +18,6 @@
   --cyan:#22d3ee;
   --lime:#a3e635;
   --or:#fbbf24;
-  --rose:#f472b6;
   --degrade:linear-gradient(100deg,var(--violet),var(--cyan));
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -106,6 +105,7 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .hero .pastille .pt{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.hero .pastille .pt{animation:none}}
 .hero h1{
   font-size:clamp(2.1rem,6.4vw,4.2rem);font-weight:900;line-height:1.08;
   letter-spacing:-.01em;margin-bottom:22px;
@@ -143,120 +143,6 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .marquee b{color:var(--cyan)}
 
-/* ---------- LA GRANDE DÉMO RESTAURANT ---------- */
-.jeu-cadre{
-  border:1px solid var(--bord);border-radius:26px;overflow:hidden;
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
-  box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
-.jeu-haut{
-  display:flex;align-items:center;gap:12px;padding:14px 18px;
-  border-bottom:1px solid var(--bord);flex-wrap:wrap;
-}
-.jeu-haut .feux{display:flex;gap:6px}
-.jeu-haut .feux i{width:11px;height:11px;border-radius:50%;display:block}
-.jeu-haut .feux i:nth-child(1){background:#ff5f57}
-.jeu-haut .feux i:nth-child(2){background:#febc2e}
-.jeu-haut .feux i:nth-child(3){background:#28c840}
-.jeu-haut .titre-jeu{font-size:.82rem;font-weight:700;color:var(--texte2)}
-.jeu-haut .score{
-  margin-left:auto;font-size:.78rem;font-weight:800;color:var(--lime);
-  background:rgba(163,230,53,.1);border:1px solid rgba(163,230,53,.25);
-  padding:6px 14px;border-radius:999px;
-}
-.consigne{
-  padding:13px 18px;font-size:.9rem;font-weight:600;color:var(--texte);
-  background:rgba(124,92,255,.10);border-bottom:1px solid var(--bord);
-  display:flex;align-items:center;gap:10px;
-}
-.consigne .etape-num{
-  flex:none;width:24px;height:24px;border-radius:50%;background:var(--degrade);
-  display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;
-}
-.scene{
-  position:relative;height:400px;
-  background:
-    radial-gradient(ellipse at 50% -20%,rgba(124,92,255,.18),transparent 55%),
-    linear-gradient(180deg,#141826 0%,#10131e 100%);
-  overflow:hidden;user-select:none;
-}
-@media(max-width:640px){.scene{height:340px}}
-.scene .sol{
-  position:absolute;inset:auto 0 0 0;height:72%;
-  background:
-    repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 64px),
-    linear-gradient(180deg,#1a1f30,#131722);
-  border-top:2px solid rgba(255,255,255,.07);
-}
-.scene .porte{
-  position:absolute;left:0;bottom:16%;width:52px;height:88px;
-  background:linear-gradient(180deg,#2a3048,#1d2233);
-  border:2px solid rgba(255,255,255,.12);border-left:none;border-radius:0 12px 12px 0;
-  display:grid;place-items:center;font-size:1.5rem;
-}
-.scene .bar{
-  position:absolute;right:14px;bottom:14%;width:120px;height:74px;
-  background:linear-gradient(180deg,#3a2b18,#241a0e);
-  border:2px solid rgba(251,191,36,.3);border-radius:14px;
-  display:grid;place-items:center;font-size:1.6rem;
-}
-.scene .bar::after{
-  content:'BAR';position:absolute;top:-22px;left:50%;transform:translateX(-50%);
-  font-family:'Unbounded';font-size:.6rem;letter-spacing:.3em;color:var(--or);
-}
-.table-jeu{
-  position:absolute;width:74px;height:74px;border:none;background:none;
-  transform:translate(-50%,-50%);transition:transform .2s;
-}
-.table-jeu:hover{transform:translate(-50%,-50%) scale(1.08)}
-.table-jeu .plateau{
-  width:100%;height:100%;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#8c6bff33,#242a40);
-  border:3px solid rgba(124,92,255,.45);
-  display:grid;place-items:center;font-size:1.5rem;
-  box-shadow:0 10px 26px rgba(0,0,0,.45);
-}
-.table-jeu .etiq{
-  position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);
-  font-size:.62rem;font-weight:800;letter-spacing:.14em;color:var(--texte2);white-space:nowrap;
-}
-.table-jeu.libre .plateau{animation:invite 2.6s ease-in-out infinite}
-@keyframes invite{0%,100%{box-shadow:0 10px 26px rgba(0,0,0,.45)}50%{box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 0 10px rgba(124,92,255,.12)}}
-@media(prefers-reduced-motion:reduce){.table-jeu.libre .plateau{animation:none}}
-.perso{
-  position:absolute;font-size:1.9rem;transform:translate(-50%,-90%);
-  transition:left 1.5s ease-in-out, top 1.5s ease-in-out;
-  z-index:5;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5));
-}
-.perso.marche{animation:pasapas .5s ease-in-out infinite}
-@keyframes pasapas{0%,100%{transform:translate(-50%,-90%) rotate(-4deg)}50%{transform:translate(-50%,-90%) rotate(4deg) translateY(-3px)}}
-@media(prefers-reduced-motion:reduce){.perso.marche{animation:none}}
-.cloche-jeu{
-  position:absolute;transform:translate(-50%,-50%);z-index:6;
-  border:none;border-radius:50%;width:46px;height:46px;font-size:1.3rem;
-  background:linear-gradient(135deg,var(--or),#f59e0b);
-  box-shadow:0 0 0 0 rgba(251,191,36,.5);animation:sonne 1.2s infinite;
-}
-@keyframes sonne{0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)}100%{box-shadow:0 0 0 18px rgba(251,191,36,0)}}
-@media(prefers-reduced-motion:reduce){.cloche-jeu{animation:none}}
-.bulle{
-  position:absolute;transform:translate(-50%,-140%);z-index:8;
-  background:#fff;color:#10131e;font-size:.78rem;font-weight:800;
-  padding:8px 13px;border-radius:14px 14px 14px 3px;white-space:nowrap;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-  animation:pop .25s ease;
-}
-@keyframes pop{from{transform:translate(-50%,-120%) scale(.6);opacity:0}to{transform:translate(-50%,-140%) scale(1);opacity:1}}
-.jeu-bas{
-  padding:13px 18px;border-top:1px solid var(--bord);
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-  font-size:.8rem;color:var(--texte2);
-}
-.jeu-bas button{
-  margin-left:auto;border:1px solid var(--bord);background:var(--carte);color:var(--texte);
-  border-radius:10px;padding:9px 16px;font-size:.8rem;font-weight:700;
-}
-
 /* ---------- projets ---------- */
 .grille-projets{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
 .projet{
@@ -266,9 +152,10 @@ nav.haut .liens a:hover{color:var(--texte)}
   transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
 }
 .projet:hover{transform:translateY(-6px);border-color:rgba(124,92,255,.45);box-shadow:0 24px 60px rgba(0,0,0,.45)}
-.projet .demo{
-  height:210px;position:relative;overflow:hidden;
-  border-bottom:1px solid var(--bord);user-select:none;
+.projet .apercu{
+  height:220px;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--bord);
+  display:flex;align-items:flex-end;justify-content:center;
 }
 .projet .corps{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
 .projet .tag{
@@ -279,77 +166,68 @@ nav.haut .liens a:hover{color:var(--texte)}
 .projet p{font-size:.85rem;color:var(--texte2);line-height:1.6;flex:1}
 .projet .ouvrir{
   display:inline-flex;align-items:center;gap:8px;text-decoration:none;
-  font-size:.85rem;font-weight:800;color:var(--cyan);margin-top:4px;
+  font-size:.85rem;font-weight:800;color:var(--cyan);margin-top:4px;transition:gap .2s;
 }
 .projet .ouvrir:hover{gap:12px}
-.projet .ouvrir::after{content:'→';transition:inherit}
-/* démo snack : burger */
-.demo-snack{background:radial-gradient(circle at 50% 120%,rgba(232,89,12,.32),transparent 60%),#171320}
-.burger-zone{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:44px}
-.burger-pile{display:flex;flex-direction:column-reverse;align-items:center;min-height:110px;justify-content:flex-start}
-.burger-pile span{font-size:2rem;line-height:.72;animation:tombe .4s cubic-bezier(.2,1.6,.5,1)}
-@keyframes tombe{from{transform:translateY(-46px) scale(1.3);opacity:0}to{transform:none;opacity:1}}
-.boutons-burger{position:absolute;top:12px;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.boutons-burger button{
-  border:1px solid var(--bord);background:rgba(0,0,0,.35);border-radius:999px;
-  padding:7px 12px;font-size:1rem;transition:transform .15s;
-}
-.boutons-burger button:hover{transform:scale(1.15)}
-.ticket-snack{
-  position:absolute;left:50%;bottom:10px;transform:translateX(-50%);
-  font-size:.72rem;font-weight:800;color:var(--lime);
-}
-/* démo coiffeur */
-.demo-coiffeur{background:radial-gradient(circle at 50% -30%,rgba(31,92,77,.5),transparent 65%),#121a17}
-.tete{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:4.4rem;transition:transform .2s}
-.ciseaux{position:absolute;font-size:2rem;left:20%;top:30%;opacity:0;z-index:3}
-.ciseaux.coupe{animation:coupe 1s ease forwards}
-@keyframes coupe{0%{opacity:0;left:20%}20%{opacity:1}80%{opacity:1;left:70%;transform:rotate(-20deg)}100%{opacity:0;left:74%}}
-.styles-coiffeur{position:absolute;top:12px;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.styles-coiffeur button{
-  border:1px solid var(--bord);background:rgba(0,0,0,.35);border-radius:999px;
-  padding:7px 13px;font-size:.75rem;font-weight:700;color:var(--texte);
-}
-.confirm-coiffeur{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-size:.72rem;font-weight:800;color:var(--lime);white-space:nowrap}
-/* démo terrasses */
-.demo-terrasses{background:radial-gradient(circle at 50% -30%,rgba(43,125,179,.45),transparent 60%),#0f1722}
-.mini-plan{position:absolute;inset:26px 18px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;place-items:center}
-.mini-table{
-  width:58px;height:58px;border-radius:50%;border:2px solid rgba(43,125,179,.55);
-  background:rgba(43,125,179,.12);display:grid;place-items:center;font-size:1.25rem;
-  transition:all .2s;position:relative;
-}
-.mini-table:hover{transform:scale(1.1)}
-.mini-table.prise{border-color:var(--or);background:rgba(251,191,36,.14)}
-.mini-table .qui{
-  position:absolute;bottom:-17px;font-size:.58rem;font-weight:800;color:var(--or);white-space:nowrap;
-}
-.compteur-terrasse{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:.72rem;font-weight:800;color:var(--cyan);white-space:nowrap}
-/* démo appel serveur */
-.demo-appel{background:radial-gradient(circle at 50% 130%,rgba(110,36,49,.55),transparent 60%),#191014;display:flex;align-items:center;justify-content:center;gap:18px}
+.projet .ouvrir::after{content:'→'}
+
+/* mini écran de téléphone (aperçu statique) */
 .mini-tel{
-  width:108px;height:172px;border-radius:20px;border:2px solid var(--bord);
-  background:#0d0d12;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  width:190px;border-radius:22px 22px 0 0;
+  border:2px solid rgba(255,255,255,.14);border-bottom:none;
+  background:#0d0f16;padding:14px 13px 0;
+  display:flex;flex-direction:column;gap:8px;
+  transform:translateY(10px);
+  transition:transform .35s ease;
+  box-shadow:0 -14px 50px rgba(0,0,0,.5);
 }
-.mini-tel .enc{width:34px;height:5px;border-radius:99px;background:rgba(255,255,255,.15)}
-.mini-tel .lab-tel{font-size:.58rem;color:var(--texte2);font-weight:700;letter-spacing:.1em;text-align:center}
-.btn-cloche-mini{
-  width:66px;height:66px;border-radius:50%;border:none;font-size:1.7rem;
-  background:linear-gradient(140deg,#8c3140,#6e2431);color:#fff;
-  box-shadow:0 8px 26px rgba(140,49,64,.55);transition:transform .15s;
+.projet:hover .mini-tel{transform:translateY(2px)}
+.mini-tel .encoche{width:46px;height:5px;border-radius:99px;background:rgba(255,255,255,.14);margin:0 auto 2px}
+.mini-tel .entete-app{display:flex;align-items:center;gap:7px}
+.mini-tel .entete-app .pico{
+  width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:.7rem;flex:none;
 }
-.btn-cloche-mini:active{transform:scale(.9)}
-.mini-salle{
-  width:130px;border-radius:14px;border:1px solid var(--bord);
-  background:rgba(255,255,255,.04);padding:10px;display:flex;flex-direction:column;gap:6px;
+.mini-tel .entete-app .lignes i{display:block;height:5px;border-radius:99px;background:rgba(255,255,255,.16)}
+.mini-tel .entete-app .lignes i:first-child{width:64px;margin-bottom:4px}
+.mini-tel .entete-app .lignes i:last-child{width:40px;opacity:.55}
+.rangee{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:8px 9px;
 }
-.mini-salle .titre-ms{font-size:.58rem;font-weight:800;letter-spacing:.2em;color:var(--texte2);text-transform:uppercase}
-.mini-salle .appel-ms{
-  font-size:.68rem;font-weight:700;background:rgba(251,191,36,.12);
-  border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:6px 8px;
-  animation:pop .3s ease;
+.rangee .ico-r{font-size:.95rem;flex:none}
+.rangee .txt-r{flex:1}
+.rangee .txt-r i{display:block;height:4px;border-radius:99px;background:rgba(255,255,255,.18)}
+.rangee .txt-r i:first-child{width:70%;margin-bottom:4px}
+.rangee .txt-r i:last-child{width:45%;opacity:.5}
+.rangee .val-r{font-size:.62rem;font-weight:800;flex:none}
+.mini-btn{
+  border-radius:11px;padding:9px;text-align:center;
+  font-size:.64rem;font-weight:800;letter-spacing:.08em;color:#fff;
 }
-.mini-salle .vide-ms{font-size:.62rem;color:var(--texte2);font-style:italic}
+.mini-grille{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mini-slot{
+  border-radius:8px;padding:6px 2px;text-align:center;font-size:.58rem;font-weight:800;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--texte2);
+}
+.mini-slot.pris{opacity:.35;text-decoration:line-through}
+.mini-plan-ap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px 4px}
+.mini-table-ap{
+  aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:1rem;
+  border:2px solid rgba(47,158,68,.5);background:rgba(47,158,68,.1);
+}
+.mini-table-ap.prise{border-color:rgba(251,191,36,.55);background:rgba(251,191,36,.12)}
+.badge-ap{
+  position:absolute;top:14px;right:14px;
+  font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(0,0,0,.4);border:1px solid var(--bord);border-radius:999px;
+  padding:6px 12px;color:var(--texte2);backdrop-filter:blur(6px);
+}
+/* fonds colorés des aperçus */
+.ap-snack{background:radial-gradient(circle at 50% 120%,rgba(232,89,12,.35),transparent 60%),#171320}
+.ap-coiffeur{background:radial-gradient(circle at 50% 120%,rgba(31,92,77,.5),transparent 62%),#121a17}
+.ap-terrasses{background:radial-gradient(circle at 50% 120%,rgba(43,125,179,.45),transparent 60%),#0f1722}
+.ap-appel{background:radial-gradient(circle at 50% 120%,rgba(140,49,64,.5),transparent 60%),#191014}
 
 /* ---------- process ---------- */
 .etapes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
@@ -397,13 +275,12 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .final h2{font-family:'Unbounded';font-size:clamp(1.4rem,4vw,2.2rem);font-weight:700;margin-bottom:14px}
 .final p{color:var(--texte2);max-width:520px;margin:0 auto 30px;line-height:1.7;font-size:.95rem}
-pied{display:block}
 .pied{
-  border-top:1px solid var(--bord);padding:26px 20px 110px;text-align:center;
+  border-top:1px solid var(--bord);padding:26px 20px 40px;text-align:center;
   font-size:.75rem;color:var(--texte2);line-height:1.8;
 }
 .toast{
-  position:fixed;left:50%;bottom:86px;transform:translate(-50%,20px);z-index:300;
+  position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);z-index:300;
   background:#fff;color:#10131e;font-weight:800;font-size:.85rem;
   padding:13px 22px;border-radius:14px;box-shadow:0 16px 50px rgba(0,0,0,.5);
   opacity:0;pointer-events:none;transition:all .3s ease;white-space:nowrap;
@@ -422,7 +299,6 @@ pied{display:block}
       <span><span class="nom">SKANEO</span><small>studio digital</small></span>
     </a>
     <div class="liens">
-      <a href="#demo">Démo</a>
       <a href="#projets">Projets</a>
       <a href="#tarifs">Tarifs</a>
       <a class="cta-nav" href="#contact">Me contacter</a>
@@ -436,8 +312,8 @@ pied{display:block}
   <h1 class="display">Vos clients <span class="grad">scannent</span>.<br>Votre commerce <span class="grad">s'anime</span>.</h1>
   <p class="accroche">Je crée des mini-applications sur mesure pour les commerces de proximité : commande en ligne, réservation, appel serveur par QR code. Sans application à installer, prêtes en quelques jours, à partir de 50&nbsp;€.</p>
   <div class="boutons">
-    <a class="btn-hero plein" href="#demo">🎮 Essayer la démo</a>
-    <a class="btn-hero ligne" href="#projets">Voir les projets</a>
+    <a class="btn-hero plein" href="#projets">Découvrir les projets</a>
+    <a class="btn-hero ligne" href="#tarifs">Voir les tarifs</a>
   </div>
   <div class="chiffres">
     <div class="chiffre"><div class="val" data-compte="4">0</div><div class="lab">Solutions prêtes</div></div>
@@ -451,116 +327,112 @@ pied{display:block}
   <div class="piste" id="piste-marquee"></div>
 </div>
 
-<!-- ==================== GRANDE DÉMO ==================== -->
-<section id="demo" class="page">
-  <div class="revele">
-    <div class="eyebrow">La preuve par le jeu</div>
-    <h2 class="titre-section display">Jouez le client. Puis imaginez les vôtres.</h2>
-    <p class="sous-section">Un restaurant miniature : installez un client à une table, il appelle le serveur, le serveur arrive. C'est exactement ce que fait ma solution QR code — en vrai, sur les téléphones de vos clients.</p>
-  </div>
-  <div class="jeu-cadre revele">
-    <div class="jeu-haut">
-      <div class="feux"><i></i><i></i><i></i></div>
-      <div class="titre-jeu">chez-marcel.demo — service du soir</div>
-      <div class="score">⭐ <span id="score-jeu">0</span> table(s) servie(s)</div>
-    </div>
-    <div class="consigne"><span class="etape-num" id="num-consigne">1</span><span id="texte-consigne">Cliquez sur une table libre pour installer un client.</span></div>
-    <div class="scene" id="scene">
-      <div class="sol"></div>
-      <div class="porte">🚪</div>
-      <div class="bar">🍹</div>
-    </div>
-    <div class="jeu-bas">
-      <span>💡 Dans la vraie solution, le client scanne le QR posé sur sa table.</span>
-      <button onclick="resetJeu()">↺ Rejouer</button>
-    </div>
-  </div>
-</section>
-
 <!-- ==================== PROJETS ==================== -->
 <section id="projets" class="page">
   <div class="revele">
     <div class="eyebrow">Les projets</div>
     <h2 class="titre-section display">4 solutions déjà construites, prêtes à personnaliser</h2>
-    <p class="sous-section">Chaque carte se joue. Chaque bouton « Ouvrir la maquette » lance la version complète, avec le côté client et le côté commerçant en direct.</p>
+    <p class="sous-section">Chaque solution a deux faces : la page que vos clients ouvrent en scannant, et l'écran sur lequel vous recevez tout en direct. Ouvrez les maquettes pour les essayer comme un vrai client.</p>
   </div>
   <div class="grille-projets">
 
     <!-- SNACK -->
     <article class="projet revele">
-      <div class="demo demo-snack">
-        <div class="boutons-burger">
-          <button onclick="ajoutBurger('🥩')" title="Steak">🥩</button>
-          <button onclick="ajoutBurger('🧀')" title="Fromage">🧀</button>
-          <button onclick="ajoutBurger('🥬')" title="Salade">🥬</button>
-          <button onclick="ajoutBurger('🍅')" title="Tomate">🍅</button>
-          <button onclick="envoyerBurger()" title="Envoyer" style="font-size:.72rem;font-weight:800;color:var(--lime)">ENVOYER ➜</button>
+      <div class="apercu ap-snack">
+        <div class="badge-ap">Aperçu</div>
+        <div class="mini-tel">
+          <div class="encoche"></div>
+          <div class="entete-app">
+            <span class="pico" style="background:linear-gradient(135deg,#e8590c,#ff8b3d)">🍔</span>
+            <span class="lignes"><i></i><i></i></span>
+          </div>
+          <div class="rangee"><span class="ico-r">🌯</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">7,50&nbsp;€</span></div>
+          <div class="rangee"><span class="ico-r">🍔</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">9,90&nbsp;€</span></div>
+          <div class="rangee"><span class="ico-r">🍟</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#ff8b3d">3,00&nbsp;€</span></div>
+          <div class="mini-btn" style="background:linear-gradient(135deg,#e8590c,#ff8b3d)">COMMANDER · 20,40&nbsp;€</div>
         </div>
-        <div class="burger-zone"><div class="burger-pile" id="burger-pile"><span>🍞</span></div></div>
-        <div class="ticket-snack" id="ticket-snack">Composez le burger, puis envoyez-le en cuisine ↑</div>
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(232,89,12,.14);color:#ff8b3d">Commande en ligne</span>
         <h3>Le Snack</h3>
-        <p>Commande depuis le téléphone : menu, suppléments, panier, retrait sans file d'attente. Côté cuisine : les commandes tombent en direct.</p>
-        <a class="ouvrir" href="snack.html">Ouvrir la maquette</a>
+        <p>Commande depuis le téléphone : menu, suppléments, panier, retrait sans file d'attente. Côté cuisine : les commandes tombent en direct avec leur numéro.</p>
+        <a class="ouvrir" href="snack.html">Essayer la maquette</a>
       </div>
     </article>
 
     <!-- COIFFEUR -->
     <article class="projet revele">
-      <div class="demo demo-coiffeur">
-        <div class="styles-coiffeur">
-          <button onclick="couper('🧑‍🦲','Boule à zéro')">Rasé</button>
-          <button onclick="couper('👨‍🦱','Dégradé')">Dégradé</button>
-          <button onclick="couper('🧑‍🦰','Mèche libre')">Coloration</button>
-          <button onclick="couper('🧔','Barbe sculptée')">Barbe</button>
+      <div class="apercu ap-coiffeur">
+        <div class="badge-ap">Aperçu</div>
+        <div class="mini-tel">
+          <div class="encoche"></div>
+          <div class="entete-app">
+            <span class="pico" style="background:linear-gradient(135deg,#1f5c4d,#2e7d68)">💈</span>
+            <span class="lignes"><i></i><i></i></span>
+          </div>
+          <div class="rangee"><span class="ico-r">✂️</span><span class="txt-r"><i></i><i></i></span><span class="val-r" style="color:#5cc9a7">26&nbsp;€</span></div>
+          <div class="mini-grille">
+            <span class="mini-slot pris">9h00</span><span class="mini-slot">9h30</span><span class="mini-slot">10h00</span>
+            <span class="mini-slot">10h30</span><span class="mini-slot pris">11h00</span><span class="mini-slot">11h30</span>
+          </div>
+          <div class="mini-btn" style="background:linear-gradient(135deg,#1f5c4d,#2e7d68)">RÉSERVER · SAM. 10H30</div>
         </div>
-        <div class="tete" id="tete">🙎‍♂️</div>
-        <div class="ciseaux" id="ciseaux">✂️</div>
-        <div class="confirm-coiffeur" id="confirm-coiffeur">Choisissez une coupe pour ce client ↑</div>
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(46,125,104,.16);color:#5cc9a7">Rendez-vous</span>
         <h3>Le Salon</h3>
-        <p>Réservation en 4 étapes : prestations, coiffeur préféré, créneaux calculés en direct. Côté salon : le planning se remplit tout seul.</p>
-        <a class="ouvrir" href="coiffeur.html">Ouvrir la maquette</a>
+        <p>Réservation en 4 étapes : prestations, coiffeur préféré, créneaux disponibles calculés en direct. Côté salon : le planning se remplit tout seul, sans téléphone.</p>
+        <a class="ouvrir" href="coiffeur.html">Essayer la maquette</a>
       </div>
     </article>
 
     <!-- TERRASSES -->
     <article class="projet revele">
-      <div class="demo demo-terrasses">
-        <div class="mini-plan" id="mini-plan"></div>
-        <div class="compteur-terrasse" id="compteur-terrasse">Cliquez sur une table libre pour la réserver ↑</div>
+      <div class="apercu ap-terrasses">
+        <div class="badge-ap">Aperçu</div>
+        <div class="mini-tel">
+          <div class="encoche"></div>
+          <div class="entete-app">
+            <span class="pico" style="background:linear-gradient(135deg,#123f5c,#2b7db3)">⛱️</span>
+            <span class="lignes"><i></i><i></i></span>
+          </div>
+          <div class="mini-plan-ap">
+            <span class="mini-table-ap prise">⛱️</span><span class="mini-table-ap">🪑</span><span class="mini-table-ap prise">⛱️</span>
+            <span class="mini-table-ap">🪑</span><span class="mini-table-ap prise">⛱️</span><span class="mini-table-ap">🪑</span>
+          </div>
+          <div class="mini-btn" style="background:linear-gradient(135deg,#2b7db3,#3f96cf)">RÉSERVER · CE SOIR 20H</div>
+        </div>
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(43,125,179,.16);color:#5eb2e6">Réservation de table</span>
         <h3>Les Terrasses</h3>
-        <p>Le client choisit personnes, zone et créneau ; le restaurant voit sa terrasse se remplir sur un vrai plan de tables, service par service.</p>
-        <a class="ouvrir" href="terrasses.html">Ouvrir la maquette</a>
+        <p>Le client choisit personnes, zone et créneau ; le restaurant voit sa terrasse et sa salle se remplir sur un vrai plan de tables, service par service.</p>
+        <a class="ouvrir" href="terrasses.html">Essayer la maquette</a>
       </div>
     </article>
 
     <!-- APPEL SERVEUR -->
     <article class="projet revele">
-      <div class="demo demo-appel">
+      <div class="apercu ap-appel">
+        <div class="badge-ap">Aperçu</div>
         <div class="mini-tel">
-          <div class="enc"></div>
-          <div class="lab-tel">TABLE 12<br>Chez Marcel</div>
-          <button class="btn-cloche-mini" onclick="miniAppel()">🛎️</button>
-          <div class="lab-tel">Appeler<br>le serveur</div>
-        </div>
-        <div class="mini-salle">
-          <div class="titre-ms">🔔 Écran salle</div>
-          <div id="mini-salle-liste"><div class="vide-ms">Aucun appel…</div></div>
+          <div class="encoche"></div>
+          <div class="entete-app">
+            <span class="pico" style="background:linear-gradient(135deg,#6e2431,#8c3140)">🍷</span>
+            <span class="lignes"><i></i><i></i></span>
+          </div>
+          <div class="rangee" style="justify-content:center;padding:12px"><span style="font-size:1.6rem">🛎️</span></div>
+          <div class="mini-btn" style="background:linear-gradient(135deg,#6e2431,#8c3140)">APPELER LE SERVEUR</div>
+          <div class="mini-grille" style="grid-template-columns:1fr 1fr">
+            <span class="mini-slot">🧾 Addition</span><span class="mini-slot">💧 Carafe</span>
+          </div>
         </div>
       </div>
       <div class="corps">
         <span class="tag" style="background:rgba(140,49,64,.2);color:#f08a9b">QR code à table</span>
         <h3>Appel Serveur</h3>
-        <p>Un scan, un bouton : le serveur sait qui l'appelle et pourquoi. Addition et carafe d'eau incluses, chevalets QR prêts à imprimer.</p>
-        <a class="ouvrir" href="appel-serveur.html">Ouvrir la maquette</a>
+        <p>Un scan, un bouton : le serveur sait qui l'appelle, à quelle table et pourquoi. Addition et carafe d'eau incluses, chevalets QR prêts à imprimer.</p>
+        <a class="ouvrir" href="appel-serveur.html">Essayer la maquette</a>
       </div>
     </article>
 
@@ -644,9 +516,6 @@ pied{display:block}
 <div class="toast" id="toast"></div>
 
 <script>
-/* =====================================================
-   OUTILS
-===================================================== */
 function toast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -685,181 +554,6 @@ document.querySelectorAll('[data-compte]').forEach(el=>obsC.observe(el));
   const bloc = mots.map(m=>`<span>${m}</span>`).join('');
   document.getElementById('piste-marquee').innerHTML = bloc + bloc;
 })();
-
-/* =====================================================
-   GRANDE DÉMO RESTAURANT
-===================================================== */
-const TABLES_JEU = [
-  {id:1, x:24, y:38}, {id:2, x:46, y:32}, {id:3, x:68, y:42}, {id:4, x:35, y:68},
-];
-const POS_PORTE = {x:6, y:66};
-const POS_BAR = {x:86, y:70};
-let scoreJeu = 0;
-const scene = () => document.getElementById('scene');
-
-function pct(el, x, y){ el.style.left = x+'%'; el.style.top = y+'%'; }
-function consigne(num, txt){
-  document.getElementById('num-consigne').textContent = num;
-  document.getElementById('texte-consigne').textContent = txt;
-}
-function montreJeu(){
-  TABLES_JEU.forEach(t=>{
-    const b = document.createElement('button');
-    b.className = 'table-jeu libre';
-    b.id = 'tj-'+t.id;
-    b.innerHTML = `<span class="plateau">🪑</span><span class="etiq">TABLE ${t.id}</span>`;
-    pct(b, t.x, t.y);
-    b.onclick = ()=>clicTable(t);
-    scene().appendChild(b);
-  });
-  // le serveur attend au bar
-  const serveur = document.createElement('div');
-  serveur.className = 'perso'; serveur.id = 'serveur'; serveur.textContent = '🤵';
-  pct(serveur, POS_BAR.x, POS_BAR.y - 8);
-  scene().appendChild(serveur);
-}
-function clicTable(t){
-  const bt = document.getElementById('tj-'+t.id);
-  if(!bt.classList.contains('libre')) { toast('Cette table est déjà occupée !'); return; }
-  bt.classList.remove('libre');
-  bt.querySelector('.plateau').textContent = '🪑';
-  // le client entre par la porte
-  const c = document.createElement('div');
-  c.className = 'perso marche'; c.textContent = '🚶';
-  pct(c, POS_PORTE.x, POS_PORTE.y);
-  scene().appendChild(c);
-  consigne('…', `Le client rejoint la table ${t.id}…`);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>pct(c, t.x, t.y - 4)));
-  setTimeout(()=>{
-    c.classList.remove('marche');
-    c.textContent = '🧑';
-    bt.querySelector('.plateau').textContent = '😋';
-    c.remove();
-    // la cloche apparaît
-    const cloche = document.createElement('button');
-    cloche.className = 'cloche-jeu'; cloche.textContent = '🛎️';
-    pct(cloche, t.x + 8, t.y - 12);
-    cloche.onclick = ()=>clicCloche(t, cloche, bt);
-    scene().appendChild(cloche);
-    consigne('2', `Le client de la table ${t.id} a besoin de quelque chose : cliquez sur la cloche !`);
-  }, 1650);
-}
-function clicCloche(t, cloche, bt){
-  cloche.remove();
-  const serveur = document.getElementById('serveur');
-  serveur.classList.add('marche');
-  bulle(t.x + 8, t.y - 14, `Table ${t.id} appelée 🔔`);
-  consigne('…', 'Le serveur a vu l\'appel sur son écran, il arrive…');
-  pct(serveur, t.x + 6, t.y - 2);
-  setTimeout(()=>{
-    serveur.classList.remove('marche');
-    bulle(t.x + 6, t.y - 16, 'À votre service ! ✨');
-    bt.querySelector('.plateau').textContent = '🍽️';
-    scoreJeu++;
-    document.getElementById('score-jeu').textContent = scoreJeu;
-    setTimeout(()=>{
-      serveur.classList.add('marche');
-      pct(serveur, POS_BAR.x, POS_BAR.y - 8);
-      setTimeout(()=>serveur.classList.remove('marche'), 1600);
-      consigne('1', scoreJeu>=TABLES_JEU.length
-        ? 'Toutes les tables sont servies — bravo, le service est bouclé ! ↺ Rejouer ?'
-        : 'Installez un autre client sur une table libre.');
-    }, 1400);
-  }, 1650);
-}
-function bulle(x, y, txt){
-  const b = document.createElement('div');
-  b.className = 'bulle'; b.textContent = txt;
-  pct(b, x, y);
-  scene().appendChild(b);
-  setTimeout(()=>b.remove(), 2200);
-}
-function resetJeu(){
-  scene().querySelectorAll('.table-jeu,.perso,.cloche-jeu,.bulle').forEach(e=>e.remove());
-  scoreJeu = 0;
-  document.getElementById('score-jeu').textContent = 0;
-  consigne('1','Cliquez sur une table libre pour installer un client.');
-  montreJeu();
-}
-montreJeu();
-
-/* =====================================================
-   MINI-DÉMOS DES CARTES
-===================================================== */
-/* snack : burger */
-let pileBurger = 1;
-function ajoutBurger(ing){
-  if(pileBurger >= 7){ toast('Il est déjà bien garni ! Envoyez-le 😄'); return; }
-  const s = document.createElement('span');
-  s.textContent = ing;
-  document.getElementById('burger-pile').appendChild(s);
-  pileBurger++;
-  document.getElementById('ticket-snack').textContent = 'Beau burger ! Encore un ingrédient, ou envoyez ➜';
-}
-function envoyerBurger(){
-  if(pileBurger < 2){ toast('Ajoutez au moins un ingrédient !'); return; }
-  const haut = document.createElement('span');
-  haut.textContent = '🍔';
-  const pile = document.getElementById('burger-pile');
-  pile.innerHTML = '';
-  pile.appendChild(haut);
-  const num = 40 + Math.floor(Math.random()*30);
-  document.getElementById('ticket-snack').textContent = `✅ Commande n° ${num} envoyée en cuisine — prête dans ~12 min`;
-  pileBurger = 1;
-  setTimeout(()=>{
-    pile.innerHTML = '<span>🍞</span>';
-    document.getElementById('ticket-snack').textContent = 'Composez le burger, puis envoyez-le en cuisine ↑';
-  }, 3200);
-}
-/* coiffeur */
-function couper(emoji, nomStyle){
-  const cis = document.getElementById('ciseaux');
-  cis.classList.remove('coupe');
-  void cis.offsetWidth;
-  cis.classList.add('coupe');
-  setTimeout(()=>{
-    document.getElementById('tete').textContent = emoji;
-    const h = 9 + Math.floor(Math.random()*9);
-    const m = ['00','30'][Math.floor(Math.random()*2)];
-    document.getElementById('confirm-coiffeur').textContent = `✅ ${nomStyle} — RDV confirmé demain à ${h}h${m}`;
-  }, 800);
-}
-/* terrasses : mini plan */
-const NOMS_RESA = ['Vous','Sarah','Karim','Lina','Hugo','Nora'];
-let couverts = 6;
-(function(){
-  const plan = document.getElementById('mini-plan');
-  const capa = [2,4,2,6,4,2];
-  capa.forEach((c,i)=>{
-    const t = document.createElement('button');
-    t.className = 'mini-table' + (i===1||i===4 ? ' prise':'');
-    t.style.border = 'none';
-    t.innerHTML = (i===1||i===4 ? '⛱️' : '🪑') + (i===1?'<span class="qui">Sarah ✓</span>':'') + (i===4?'<span class="qui">Karim ✓</span>':'');
-    t.dataset.capa = c;
-    t.onclick = ()=>{
-      if(t.classList.contains('prise')){ toast('Déjà réservée !'); return; }
-      t.classList.add('prise');
-      t.innerHTML = '⛱️<span class="qui">Vous ✓</span>';
-      couverts += c;
-      document.getElementById('compteur-terrasse').textContent = `✅ Table réservée ce soir 20h — ${couverts} couverts au total`;
-    };
-    plan.appendChild(t);
-  });
-})();
-/* appel serveur */
-let nbMiniAppels = 0;
-function miniAppel(){
-  nbMiniAppels++;
-  const liste = document.getElementById('mini-salle-liste');
-  if(nbMiniAppels===1) liste.innerHTML = '';
-  if(nbMiniAppels>3){ toast('Le serveur arrive, promis 😄'); return; }
-  const d = document.createElement('div');
-  d.className = 'appel-ms';
-  d.textContent = `🛎️ Table 12 · à l'instant`;
-  liste.prepend(d);
-  setTimeout(()=>{ d.textContent = '🚶 Table 12 · pris en charge'; }, 1800);
-  setTimeout(()=>{ d.textContent = '✅ Table 12 · servi'; }, 3600);
-}
 </script>
 </body>
 </html>
