@@ -211,6 +211,11 @@ nav.haut .liens a:hover{color:var(--texte)}
 }
 .tarif .nom-t{font-family:'Unbounded';font-size:.9rem}
 .tarif .prix-t{font-family:'Unbounded';font-size:2.1rem;font-weight:700}
+.tarif .prix-t .barre{
+  font-size:1.15rem;color:var(--texte2);text-decoration:line-through;
+  text-decoration-color:rgba(244,114,182,.8);text-decoration-thickness:2px;
+  margin-right:10px;font-weight:500;
+}
 .tarif .prix-t small{font-family:'Manrope';font-size:.8rem;color:var(--texte2);font-weight:600}
 .tarif ul{list-style:none;display:flex;flex-direction:column;gap:9px;flex:1}
 .tarif li{font-size:.85rem;color:var(--texte2);display:flex;gap:9px;line-height:1.5}
@@ -262,7 +267,7 @@ nav.haut .liens a:hover{color:var(--texte)}
 <header class="hero page">
   <div class="pastille"><span class="pt"></span>Disponible pour de nouveaux projets</div>
   <h1 class="display">Vos clients <span class="grad">scannent</span>.<br>Votre commerce <span class="grad">s'anime</span>.</h1>
-  <p class="accroche">Je crée des mini-applications sur mesure pour les commerces de proximité : commande en ligne, réservation, appel serveur par QR code. Sans application à installer, prêtes en quelques jours, à partir de 50&nbsp;€.</p>
+  <p class="accroche">Je crée des mini-applications sur mesure pour les commerces de proximité : commande en ligne, réservation, appel serveur par QR code. Sans application à installer, prêtes en quelques jours, pour 99&nbsp;€ tout compris.</p>
   <div class="boutons">
     <a class="btn-hero plein" href="#projets">Découvrir les projets</a>
     <a class="btn-hero ligne" href="#tarifs">Voir les tarifs</a>
@@ -274,7 +279,7 @@ nav.haut .liens a:hover{color:var(--texte)}
     <div class="chiffre"><div class="val" data-compte="4">0</div><div class="lab">Solutions prêtes</div></div>
     <div class="chiffre"><div class="val" data-compte="30" data-suffixe="s">0</div><div class="lab">Pour commander</div></div>
     <div class="chiffre"><div class="val" data-compte="0" data-prefixe="">0</div><div class="lab">Appli à installer</div></div>
-    <div class="chiffre"><div class="val" data-compte="100" data-prefixe="~" data-suffixe="€">0</div><div class="lab">Budget max</div></div>
+    <div class="chiffre"><div class="val" data-compte="99" data-suffixe="€">0</div><div class="lab">Prix unique</div></div>
   </div>
 </header>
 
@@ -381,7 +386,7 @@ nav.haut .liens a:hover{color:var(--texte)}
     <div class="tarif star revele">
       <div class="badge-star">Le plus choisi</div>
       <div class="nom-t">Votre solution</div>
-      <div class="prix-t">50–100&nbsp;€ <small>selon le projet</small></div>
+      <div class="prix-t"><span class="barre">126&nbsp;€</span>99&nbsp;€ <small>prix de lancement</small></div>
       <ul>
         <li>Site personnalisé à vos couleurs</li>
         <li>Côté client + côté commerçant</li>
@@ -392,7 +397,7 @@ nav.haut .liens a:hover{color:var(--texte)}
     </div>
     <div class="tarif revele">
       <div class="nom-t">Tranquillité</div>
-      <div class="prix-t">10&nbsp;€ <small>/ mois, optionnel</small></div>
+      <div class="prix-t">19,99&nbsp;€ <small>/ mois, optionnel</small></div>
       <ul>
         <li>Hébergement et nom de domaine</li>
         <li>Modifications illimitées (carte, prix, horaires)</li>
