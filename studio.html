@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skaneo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fond:#07090f;
+  --fond2:#0c101a;
+  --carte:rgba(255,255,255,.04);
+  --bord:rgba(255,255,255,.09);
+  --texte:#eef1f8;
+  --texte2:#9aa3b5;
+  --violet:#7c5cff;
+  --cyan:#22d3ee;
+  --lime:#a3e635;
+  --or:#fbbf24;
+  --rose:#f472b6;
+  --degrade:linear-gradient(100deg,var(--violet),var(--cyan));
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--fond);color:var(--texte);
+  overflow-x:hidden;min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+.display{font-family:'Unbounded','Manrope',sans-serif}
+::selection{background:rgba(124,92,255,.4)}
+
+/* ---------- fond aurora ---------- */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--fond)}
+.aurora .blob{
+  position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;
+  animation:derive 26s ease-in-out infinite alternate;
+}
+.aurora .b1{width:52vw;height:52vw;left:-14vw;top:-18vw;background:#3b1d95}
+.aurora .b2{width:44vw;height:44vw;right:-12vw;top:6vw;background:#083344;animation-delay:-8s}
+.aurora .b3{width:36vw;height:36vw;left:26vw;top:52vh;background:#33104d;animation-delay:-16s}
+@keyframes derive{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(5vw,4vh) scale(1.12)}
+  100%{transform:translate(-4vw,-3vh) scale(.95)}
+}
+.aurora::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,transparent 0%,rgba(7,9,15,.55) 70%,rgba(7,9,15,.92) 100%);
+}
+@media(prefers-reduced-motion:reduce){.aurora .blob{animation:none}}
+
+/* ---------- structure ---------- */
+.page{max-width:1120px;margin:0 auto;padding:0 20px}
+section{padding:72px 0}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.68rem;font-weight:800;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:16px;
+}
+.eyebrow::before{content:'';width:26px;height:2px;background:var(--degrade);border-radius:2px}
+h2.titre-section{font-size:clamp(1.5rem,4vw,2.3rem);font-weight:700;line-height:1.2;margin-bottom:10px}
+.sous-section{color:var(--texte2);max-width:600px;font-size:.98rem;line-height:1.65;margin-bottom:36px}
+
+/* révélation au scroll */
+.revele{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.revele.vu{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.revele{opacity:1;transform:none;transition:none}}
+
+/* ---------- nav ---------- */
+nav.haut{
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(14px);background:rgba(7,9,15,.65);
+  border-bottom:1px solid var(--bord);
+}
+nav.haut .int{
+  max-width:1120px;margin:0 auto;padding:14px 20px;
+  display:flex;align-items:center;gap:22px;
+}
+.marque{display:flex;align-items:center;gap:10px;font-weight:900;text-decoration:none}
+.marque .cube{
+  width:34px;height:34px;border-radius:10px;background:var(--degrade);
+  display:grid;place-items:center;font-size:1rem;color:#fff;
+  box-shadow:0 6px 22px rgba(124,92,255,.5);
+}
+.marque .nom{font-family:'Unbounded',sans-serif;font-size:.95rem;letter-spacing:.06em}
+.marque small{display:block;font-family:'Manrope';font-size:.58rem;color:var(--texte2);letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+nav.haut .liens{margin-left:auto;display:flex;gap:20px;font-size:.85rem;font-weight:600;color:var(--texte2)}
+nav.haut .liens a{text-decoration:none;transition:color .2s}
+nav.haut .liens a:hover{color:var(--texte)}
+@media(max-width:640px){nav.haut .liens a:not(.cta-nav){display:none}}
+.cta-nav{
+  color:#fff !important;background:var(--degrade);padding:9px 18px;border-radius:999px;
+  box-shadow:0 8px 24px rgba(124,92,255,.4);
+}
+
+/* ---------- hero ---------- */
+.hero{padding:88px 0 40px;text-align:center;position:relative}
+.hero .pastille{
+  display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-weight:700;
+  border:1px solid var(--bord);background:var(--carte);border-radius:999px;
+  padding:8px 16px;color:var(--texte2);margin-bottom:26px;
+}
+.hero .pastille .pt{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{
+  font-size:clamp(2.1rem,6.4vw,4.2rem);font-weight:900;line-height:1.08;
+  letter-spacing:-.01em;margin-bottom:22px;
+}
+.hero h1 .grad{
+  background:var(--degrade);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero .accroche{color:var(--texte2);font-size:clamp(.95rem,2vw,1.12rem);max-width:640px;margin:0 auto 34px;line-height:1.7}
+.hero .boutons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-hero{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  padding:16px 30px;border-radius:16px;font-weight:800;font-size:.95rem;
+  transition:transform .18s;
+}
+.btn-hero:hover{transform:translateY(-3px)}
+.btn-hero.plein{background:var(--degrade);color:#fff;box-shadow:0 16px 44px rgba(124,92,255,.45)}
+.btn-hero.ligne{border:1px solid var(--bord);background:var(--carte);color:var(--texte)}
+.hero .chiffres{
+  display:flex;gap:34px;justify-content:center;flex-wrap:wrap;margin-top:52px;
+}
+.hero .chiffre .val{font-family:'Unbounded';font-size:1.7rem;font-weight:700;background:var(--degrade);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .chiffre .lab{font-size:.72rem;color:var(--texte2);letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:4px}
+
+/* ---------- bandeau défilant ---------- */
+.marquee{
+  border-block:1px solid var(--bord);padding:16px 0;overflow:hidden;
+  background:rgba(255,255,255,.02);white-space:nowrap;
+}
+.marquee .piste{display:inline-block;animation:defile 30s linear infinite}
+@keyframes defile{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marquee .piste{animation:none}}
+.marquee span{
+  font-family:'Unbounded';font-size:.8rem;letter-spacing:.28em;color:var(--texte2);
+  margin:0 26px;text-transform:uppercase;
+}
+.marquee b{color:var(--cyan)}
+
+/* ---------- LA GRANDE DÉMO RESTAURANT ---------- */
+.jeu-cadre{
+  border:1px solid var(--bord);border-radius:26px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.jeu-haut{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--bord);flex-wrap:wrap;
+}
+.jeu-haut .feux{display:flex;gap:6px}
+.jeu-haut .feux i{width:11px;height:11px;border-radius:50%;display:block}
+.jeu-haut .feux i:nth-child(1){background:#ff5f57}
+.jeu-haut .feux i:nth-child(2){background:#febc2e}
+.jeu-haut .feux i:nth-child(3){background:#28c840}
+.jeu-haut .titre-jeu{font-size:.82rem;font-weight:700;color:var(--texte2)}
+.jeu-haut .score{
+  margin-left:auto;font-size:.78rem;font-weight:800;color:var(--lime);
+  background:rgba(163,230,53,.1);border:1px solid rgba(163,230,53,.25);
+  padding:6px 14px;border-radius:999px;
+}
+.consigne{
+  padding:13px 18px;font-size:.9rem;font-weight:600;color:var(--texte);
+  background:rgba(124,92,255,.10);border-bottom:1px solid var(--bord);
+  display:flex;align-items:center;gap:10px;
+}
+.consigne .etape-num{
+  flex:none;width:24px;height:24px;border-radius:50%;background:var(--degrade);
+  display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;
+}
+.scene{
+  position:relative;height:400px;
+  background:
+    radial-gradient(ellipse at 50% -20%,rgba(124,92,255,.18),transparent 55%),
+    linear-gradient(180deg,#141826 0%,#10131e 100%);
+  overflow:hidden;user-select:none;
+}
+@media(max-width:640px){.scene{height:340px}}
+.scene .sol{
+  position:absolute;inset:auto 0 0 0;height:72%;
+  background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 64px),
+    linear-gradient(180deg,#1a1f30,#131722);
+  border-top:2px solid rgba(255,255,255,.07);
+}
+.scene .porte{
+  position:absolute;left:0;bottom:16%;width:52px;height:88px;
+  background:linear-gradient(180deg,#2a3048,#1d2233);
+  border:2px solid rgba(255,255,255,.12);border-left:none;border-radius:0 12px 12px 0;
+  display:grid;place-items:center;font-size:1.5rem;
+}
+.scene .bar{
+  position:absolute;right:14px;bottom:14%;width:120px;height:74px;
+  background:linear-gradient(180deg,#3a2b18,#241a0e);
+  border:2px solid rgba(251,191,36,.3);border-radius:14px;
+  display:grid;place-items:center;font-size:1.6rem;
+}
+.scene .bar::after{
+  content:'BAR';position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  font-family:'Unbounded';font-size:.6rem;letter-spacing:.3em;color:var(--or);
+}
+.table-jeu{
+  position:absolute;width:74px;height:74px;border:none;background:none;
+  transform:translate(-50%,-50%);transition:transform .2s;
+}
+.table-jeu:hover{transform:translate(-50%,-50%) scale(1.08)}
+.table-jeu .plateau{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#8c6bff33,#242a40);
+  border:3px solid rgba(124,92,255,.45);
+  display:grid;place-items:center;font-size:1.5rem;
+  box-shadow:0 10px 26px rgba(0,0,0,.45);
+}
+.table-jeu .etiq{
+  position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);
+  font-size:.62rem;font-weight:800;letter-spacing:.14em;color:var(--texte2);white-space:nowrap;
+}
+.table-jeu.libre .plateau{animation:invite 2.6s ease-in-out infinite}
+@keyframes invite{0%,100%{box-shadow:0 10px 26px rgba(0,0,0,.45)}50%{box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 0 10px rgba(124,92,255,.12)}}
+@media(prefers-reduced-motion:reduce){.table-jeu.libre .plateau{animation:none}}
+.perso{
+  position:absolute;font-size:1.9rem;transform:translate(-50%,-90%);
+  transition:left 1.5s ease-in-out, top 1.5s ease-in-out;
+  z-index:5;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5));
+}
+.perso.marche{animation:pasapas .5s ease-in-out infinite}
+@keyframes pasapas{0%,100%{transform:translate(-50%,-90%) rotate(-4deg)}50%{transform:translate(-50%,-90%) rotate(4deg) translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.perso.marche{animation:none}}
+.cloche-jeu{
+  position:absolute;transform:translate(-50%,-50%);z-index:6;
+  border:none;border-radius:50%;width:46px;height:46px;font-size:1.3rem;
+  background:linear-gradient(135deg,var(--or),#f59e0b);
+  box-shadow:0 0 0 0 rgba(251,191,36,.5);animation:sonne 1.2s infinite;
+}
+@keyframes sonne{0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)}100%{box-shadow:0 0 0 18px rgba(251,191,36,0)}}
+@media(prefers-reduced-motion:reduce){.cloche-jeu{animation:none}}
+.bulle{
+  position:absolute;transform:translate(-50%,-140%);z-index:8;
+  background:#fff;color:#10131e;font-size:.78rem;font-weight:800;
+  padding:8px 13px;border-radius:14px 14px 14px 3px;white-space:nowrap;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  animation:pop .25s ease;
+}
+@keyframes pop{from{transform:translate(-50%,-120%) scale(.6);opacity:0}to{transform:translate(-50%,-140%) scale(1);opacity:1}}
+.jeu-bas{
+  padding:13px 18px;border-top:1px solid var(--bord);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  font-size:.8rem;color:var(--texte2);
+}
+.jeu-bas button{
+  margin-left:auto;border:1px solid var(--bord);background:var(--carte);color:var(--texte);
+  border-radius:10px;padding:9px 16px;font-size:.8rem;font-weight:700;
+}
+
+/* ---------- projets ---------- */
+.grille-projets{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.projet{
+  border:1px solid var(--bord);border-radius:22px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  display:flex;flex-direction:column;
+  transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+}
+.projet:hover{transform:translateY(-6px);border-color:rgba(124,92,255,.45);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.projet .demo{
+  height:210px;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--bord);user-select:none;
+}
+.projet .corps{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.projet .tag{
+  align-self:flex-start;font-size:.62rem;font-weight:800;letter-spacing:.2em;
+  text-transform:uppercase;padding:5px 11px;border-radius:999px;
+}
+.projet h3{font-family:'Unbounded';font-size:1.02rem;font-weight:700}
+.projet p{font-size:.85rem;color:var(--texte2);line-height:1.6;flex:1}
+.projet .ouvrir{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font-size:.85rem;font-weight:800;color:var(--cyan);margin-top:4px;
+}
+.projet .ouvrir:hover{gap:12px}
+.projet .ouvrir::after{content:'→';transition:inherit}
+/* démo snack : burger */
+.demo-snack{background:radial-gradient(circle at 50% 120%,rgba(232,89,12,.32),transparent 60%),#171320}
+.burger-zone{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:44px}
+.burger-pile{display:flex;flex-direction:column-reverse;align-items:center;min-height:110px;justify-content:flex-start}
+.burger-pile span{font-size:2rem;line-height:.72;animation:tombe .4s cubic-bezier(.2,1.6,.5,1)}
+@keyframes tombe{from{transform:translateY(-46px) scale(1.3);opacity:0}to{transform:none;opacity:1}}
+.boutons-burger{position:absolute;top:12px;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.boutons-burger button{
+  border:1px solid var(--bord);background:rgba(0,0,0,.35);border-radius:999px;
+  padding:7px 12px;font-size:1rem;transition:transform .15s;
+}
+.boutons-burger button:hover{transform:scale(1.15)}
+.ticket-snack{
+  position:absolute;left:50%;bottom:10px;transform:translateX(-50%);
+  font-size:.72rem;font-weight:800;color:var(--lime);
+}
+/* démo coiffeur */
+.demo-coiffeur{background:radial-gradient(circle at 50% -30%,rgba(31,92,77,.5),transparent 65%),#121a17}
+.tete{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:4.4rem;transition:transform .2s}
+.ciseaux{position:absolute;font-size:2rem;left:20%;top:30%;opacity:0;z-index:3}
+.ciseaux.coupe{animation:coupe 1s ease forwards}
+@keyframes coupe{0%{opacity:0;left:20%}20%{opacity:1}80%{opacity:1;left:70%;transform:rotate(-20deg)}100%{opacity:0;left:74%}}
+.styles-coiffeur{position:absolute;top:12px;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.styles-coiffeur button{
+  border:1px solid var(--bord);background:rgba(0,0,0,.35);border-radius:999px;
+  padding:7px 13px;font-size:.75rem;font-weight:700;color:var(--texte);
+}
+.confirm-coiffeur{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-size:.72rem;font-weight:800;color:var(--lime);white-space:nowrap}
+/* démo terrasses */
+.demo-terrasses{background:radial-gradient(circle at 50% -30%,rgba(43,125,179,.45),transparent 60%),#0f1722}
+.mini-plan{position:absolute;inset:26px 18px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;place-items:center}
+.mini-table{
+  width:58px;height:58px;border-radius:50%;border:2px solid rgba(43,125,179,.55);
+  background:rgba(43,125,179,.12);display:grid;place-items:center;font-size:1.25rem;
+  transition:all .2s;position:relative;
+}
+.mini-table:hover{transform:scale(1.1)}
+.mini-table.prise{border-color:var(--or);background:rgba(251,191,36,.14)}
+.mini-table .qui{
+  position:absolute;bottom:-17px;font-size:.58rem;font-weight:800;color:var(--or);white-space:nowrap;
+}
+.compteur-terrasse{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:.72rem;font-weight:800;color:var(--cyan);white-space:nowrap}
+/* démo appel serveur */
+.demo-appel{background:radial-gradient(circle at 50% 130%,rgba(110,36,49,.55),transparent 60%),#191014;display:flex;align-items:center;justify-content:center;gap:18px}
+.mini-tel{
+  width:108px;height:172px;border-radius:20px;border:2px solid var(--bord);
+  background:#0d0d12;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.mini-tel .enc{width:34px;height:5px;border-radius:99px;background:rgba(255,255,255,.15)}
+.mini-tel .lab-tel{font-size:.58rem;color:var(--texte2);font-weight:700;letter-spacing:.1em;text-align:center}
+.btn-cloche-mini{
+  width:66px;height:66px;border-radius:50%;border:none;font-size:1.7rem;
+  background:linear-gradient(140deg,#8c3140,#6e2431);color:#fff;
+  box-shadow:0 8px 26px rgba(140,49,64,.55);transition:transform .15s;
+}
+.btn-cloche-mini:active{transform:scale(.9)}
+.mini-salle{
+  width:130px;border-radius:14px;border:1px solid var(--bord);
+  background:rgba(255,255,255,.04);padding:10px;display:flex;flex-direction:column;gap:6px;
+}
+.mini-salle .titre-ms{font-size:.58rem;font-weight:800;letter-spacing:.2em;color:var(--texte2);text-transform:uppercase}
+.mini-salle .appel-ms{
+  font-size:.68rem;font-weight:700;background:rgba(251,191,36,.12);
+  border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:6px 8px;
+  animation:pop .3s ease;
+}
+.mini-salle .vide-ms{font-size:.62rem;color:var(--texte2);font-style:italic}
+
+/* ---------- process ---------- */
+.etapes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.etape-c{
+  border:1px solid var(--bord);border-radius:20px;padding:26px 22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  position:relative;
+}
+.etape-c .n{
+  font-family:'Unbounded';font-size:2.6rem;font-weight:900;line-height:1;
+  background:var(--degrade);-webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:14px;opacity:.9;
+}
+.etape-c b{display:block;font-size:1.02rem;margin-bottom:8px}
+.etape-c p{font-size:.85rem;color:var(--texte2);line-height:1.65}
+
+/* ---------- tarifs ---------- */
+.tarifs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.tarif{
+  border:1px solid var(--bord);border-radius:22px;padding:28px 24px;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  display:flex;flex-direction:column;gap:14px;position:relative;
+}
+.tarif.star{border-color:rgba(124,92,255,.55);box-shadow:0 20px 60px rgba(124,92,255,.18)}
+.tarif .badge-star{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--degrade);color:#fff;font-size:.62rem;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border-radius:999px;white-space:nowrap;
+}
+.tarif .nom-t{font-family:'Unbounded';font-size:.9rem}
+.tarif .prix-t{font-family:'Unbounded';font-size:2.1rem;font-weight:700}
+.tarif .prix-t small{font-family:'Manrope';font-size:.8rem;color:var(--texte2);font-weight:600}
+.tarif ul{list-style:none;display:flex;flex-direction:column;gap:9px;flex:1}
+.tarif li{font-size:.85rem;color:var(--texte2);display:flex;gap:9px;line-height:1.5}
+.tarif li::before{content:'✦';color:var(--cyan);flex:none}
+.tarif .note-t{font-size:.72rem;color:var(--texte2);font-style:italic}
+
+/* ---------- contact / pied ---------- */
+.final{
+  text-align:center;border:1px solid var(--bord);border-radius:28px;
+  padding:64px 26px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 130%,rgba(124,92,255,.3),transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+}
+.final h2{font-family:'Unbounded';font-size:clamp(1.4rem,4vw,2.2rem);font-weight:700;margin-bottom:14px}
+.final p{color:var(--texte2);max-width:520px;margin:0 auto 30px;line-height:1.7;font-size:.95rem}
+pied{display:block}
+.pied{
+  border-top:1px solid var(--bord);padding:26px 20px 110px;text-align:center;
+  font-size:.75rem;color:var(--texte2);line-height:1.8;
+}
+.toast{
+  position:fixed;left:50%;bottom:86px;transform:translate(-50%,20px);z-index:300;
+  background:#fff;color:#10131e;font-weight:800;font-size:.85rem;
+  padding:13px 22px;border-radius:14px;box-shadow:0 16px 50px rgba(0,0,0,.5);
+  opacity:0;pointer-events:none;transition:all .3s ease;white-space:nowrap;
+}
+.toast.visible{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<nav class="haut">
+  <div class="int">
+    <a class="marque" href="#">
+      <span class="cube">⌁</span>
+      <span><span class="nom">SKANEO</span><small>studio digital</small></span>
+    </a>
+    <div class="liens">
+      <a href="#demo">Démo</a>
+      <a href="#projets">Projets</a>
+      <a href="#tarifs">Tarifs</a>
+      <a class="cta-nav" href="#contact">Me contacter</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero page">
+  <div class="pastille"><span class="pt"></span>Disponible pour de nouveaux projets</div>
+  <h1 class="display">Vos clients <span class="grad">scannent</span>.<br>Votre commerce <span class="grad">s'anime</span>.</h1>
+  <p class="accroche">Je crée des mini-applications sur mesure pour les commerces de proximité : commande en ligne, réservation, appel serveur par QR code. Sans application à installer, prêtes en quelques jours, à partir de 50&nbsp;€.</p>
+  <div class="boutons">
+    <a class="btn-hero plein" href="#demo">🎮 Essayer la démo</a>
+    <a class="btn-hero ligne" href="#projets">Voir les projets</a>
+  </div>
+  <div class="chiffres">
+    <div class="chiffre"><div class="val" data-compte="4">0</div><div class="lab">Solutions prêtes</div></div>
+    <div class="chiffre"><div class="val" data-compte="30" data-suffixe="s">0</div><div class="lab">Pour commander</div></div>
+    <div class="chiffre"><div class="val" data-compte="0" data-prefixe="">0</div><div class="lab">Appli à installer</div></div>
+    <div class="chiffre"><div class="val" data-compte="100" data-prefixe="~" data-suffixe="€">0</div><div class="lab">Budget max</div></div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="piste" id="piste-marquee"></div>
+</div>
+
+<!-- ==================== GRANDE DÉMO ==================== -->
+<section id="demo" class="page">
+  <div class="revele">
+    <div class="eyebrow">La preuve par le jeu</div>
+    <h2 class="titre-section display">Jouez le client. Puis imaginez les vôtres.</h2>
+    <p class="sous-section">Un restaurant miniature : installez un client à une table, il appelle le serveur, le serveur arrive. C'est exactement ce que fait ma solution QR code — en vrai, sur les téléphones de vos clients.</p>
+  </div>
+  <div class="jeu-cadre revele">
+    <div class="jeu-haut">
+      <div class="feux"><i></i><i></i><i></i></div>
+      <div class="titre-jeu">chez-marcel.demo — service du soir</div>
+      <div class="score">⭐ <span id="score-jeu">0</span> table(s) servie(s)</div>
+    </div>
+    <div class="consigne"><span class="etape-num" id="num-consigne">1</span><span id="texte-consigne">Cliquez sur une table libre pour installer un client.</span></div>
+    <div class="scene" id="scene">
+      <div class="sol"></div>
+      <div class="porte">🚪</div>
+      <div class="bar">🍹</div>
+    </div>
+    <div class="jeu-bas">
+      <span>💡 Dans la vraie solution, le client scanne le QR posé sur sa table.</span>
+      <button onclick="resetJeu()">↺ Rejouer</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJETS ==================== -->
+<section id="projets" class="page">
+  <div class="revele">
+    <div class="eyebrow">Les projets</div>
+    <h2 class="titre-section display">4 solutions déjà construites, prêtes à personnaliser</h2>
+    <p class="sous-section">Chaque carte se joue. Chaque bouton « Ouvrir la maquette » lance la version complète, avec le côté client et le côté commerçant en direct.</p>
+  </div>
+  <div class="grille-projets">
+
+    <!-- SNACK -->
+    <article class="projet revele">
+      <div class="demo demo-snack">
+        <div class="boutons-burger">
+          <button onclick="ajoutBurger('🥩')" title="Steak">🥩</button>
+          <button onclick="ajoutBurger('🧀')" title="Fromage">🧀</button>
+          <button onclick="ajoutBurger('🥬')" title="Salade">🥬</button>
+          <button onclick="ajoutBurger('🍅')" title="Tomate">🍅</button>
+          <button onclick="envoyerBurger()" title="Envoyer" style="font-size:.72rem;font-weight:800;color:var(--lime)">ENVOYER ➜</button>
+        </div>
+        <div class="burger-zone"><div class="burger-pile" id="burger-pile"><span>🍞</span></div></div>
+        <div class="ticket-snack" id="ticket-snack">Composez le burger, puis envoyez-le en cuisine ↑</div>
+      </div>
+      <div class="corps">
+        <span class="tag" style="background:rgba(232,89,12,.14);color:#ff8b3d">Commande en ligne</span>
+        <h3>Le Snack</h3>
+        <p>Commande depuis le téléphone : menu, suppléments, panier, retrait sans file d'attente. Côté cuisine : les commandes tombent en direct.</p>
+        <a class="ouvrir" href="snack.html">Ouvrir la maquette</a>
+      </div>
+    </article>
+
+    <!-- COIFFEUR -->
+    <article class="projet revele">
+      <div class="demo demo-coiffeur">
+        <div class="styles-coiffeur">
+          <button onclick="couper('🧑‍🦲','Boule à zéro')">Rasé</button>
+          <button onclick="couper('👨‍🦱','Dégradé')">Dégradé</button>
+          <button onclick="couper('🧑‍🦰','Mèche libre')">Coloration</button>
+          <button onclick="couper('🧔','Barbe sculptée')">Barbe</button>
+        </div>
+        <div class="tete" id="tete">🙎‍♂️</div>
+        <div class="ciseaux" id="ciseaux">✂️</div>
+        <div class="confirm-coiffeur" id="confirm-coiffeur">Choisissez une coupe pour ce client ↑</div>
+      </div>
+      <div class="corps">
+        <span class="tag" style="background:rgba(46,125,104,.16);color:#5cc9a7">Rendez-vous</span>
+        <h3>Le Salon</h3>
+        <p>Réservation en 4 étapes : prestations, coiffeur préféré, créneaux calculés en direct. Côté salon : le planning se remplit tout seul.</p>
+        <a class="ouvrir" href="coiffeur.html">Ouvrir la maquette</a>
+      </div>
+    </article>
+
+    <!-- TERRASSES -->
+    <article class="projet revele">
+      <div class="demo demo-terrasses">
+        <div class="mini-plan" id="mini-plan"></div>
+        <div class="compteur-terrasse" id="compteur-terrasse">Cliquez sur une table libre pour la réserver ↑</div>
+      </div>
+      <div class="corps">
+        <span class="tag" style="background:rgba(43,125,179,.16);color:#5eb2e6">Réservation de table</span>
+        <h3>Les Terrasses</h3>
+        <p>Le client choisit personnes, zone et créneau ; le restaurant voit sa terrasse se remplir sur un vrai plan de tables, service par service.</p>
+        <a class="ouvrir" href="terrasses.html">Ouvrir la maquette</a>
+      </div>
+    </article>
+
+    <!-- APPEL SERVEUR -->
+    <article class="projet revele">
+      <div class="demo demo-appel">
+        <div class="mini-tel">
+          <div class="enc"></div>
+          <div class="lab-tel">TABLE 12<br>Chez Marcel</div>
+          <button class="btn-cloche-mini" onclick="miniAppel()">🛎️</button>
+          <div class="lab-tel">Appeler<br>le serveur</div>
+        </div>
+        <div class="mini-salle">
+          <div class="titre-ms">🔔 Écran salle</div>
+          <div id="mini-salle-liste"><div class="vide-ms">Aucun appel…</div></div>
+        </div>
+      </div>
+      <div class="corps">
+        <span class="tag" style="background:rgba(140,49,64,.2);color:#f08a9b">QR code à table</span>
+        <h3>Appel Serveur</h3>
+        <p>Un scan, un bouton : le serveur sait qui l'appelle et pourquoi. Addition et carafe d'eau incluses, chevalets QR prêts à imprimer.</p>
+        <a class="ouvrir" href="appel-serveur.html">Ouvrir la maquette</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ==================== PROCESS ==================== -->
+<section class="page">
+  <div class="revele">
+    <div class="eyebrow">Comment ça marche</div>
+    <h2 class="titre-section display">De l'idée au QR sur votre comptoir</h2>
+    <p class="sous-section">Pas de réunion interminable, pas de jargon. Trois étapes, et vos clients scannent.</p>
+  </div>
+  <div class="etapes">
+    <div class="etape-c revele"><div class="n">01</div><b>On discute 15 minutes</b><p>Votre enseigne, vos couleurs, votre carte ou vos prestations. Je repars avec tout ce qu'il faut — et vous, avec une démo à votre nom sous 48 h.</p></div>
+    <div class="etape-c revele"><div class="n">02</div><b>Je construis, vous validez</b><p>Vous testez sur votre téléphone comme un vrai client. On ajuste les textes, les prix, les photos jusqu'à ce que ce soit parfait.</p></div>
+    <div class="etape-c revele"><div class="n">03</div><b>Vous scannez, c'est en ligne</b><p>Mise en ligne, QR codes imprimés pour vos tables ou votre comptoir, et je reste disponible pour les modifications.</p></div>
+  </div>
+</section>
+
+<!-- ==================== TARIFS ==================== -->
+<section id="tarifs" class="page">
+  <div class="revele">
+    <div class="eyebrow">Tarifs</div>
+    <h2 class="titre-section display">Simple, sans abonnement caché</h2>
+    <p class="sous-section">Un prix unique pour démarrer, une option sereine pour durer.</p>
+  </div>
+  <div class="tarifs">
+    <div class="tarif revele">
+      <div class="nom-t">Démo</div>
+      <div class="prix-t">0&nbsp;€</div>
+      <ul>
+        <li>Maquette à votre enseigne sous 48&nbsp;h</li>
+        <li>Testable sur votre téléphone</li>
+        <li>Sans engagement</li>
+      </ul>
+      <div class="note-t">Pour voir avant de décider.</div>
+    </div>
+    <div class="tarif star revele">
+      <div class="badge-star">Le plus choisi</div>
+      <div class="nom-t">Votre solution</div>
+      <div class="prix-t">50–100&nbsp;€ <small>selon le projet</small></div>
+      <ul>
+        <li>Site personnalisé à vos couleurs</li>
+        <li>Côté client + côté commerçant</li>
+        <li>QR codes prêts à imprimer</li>
+        <li>Mise en ligne incluse</li>
+      </ul>
+      <div class="note-t">Payable à la livraison, quand vous êtes satisfait.</div>
+    </div>
+    <div class="tarif revele">
+      <div class="nom-t">Tranquillité</div>
+      <div class="prix-t">10&nbsp;€ <small>/ mois, optionnel</small></div>
+      <ul>
+        <li>Hébergement et nom de domaine</li>
+        <li>Modifications illimitées (carte, prix, horaires)</li>
+        <li>Support direct par WhatsApp</li>
+      </ul>
+      <div class="note-t">Résiliable quand vous voulez.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section id="contact" class="page">
+  <div class="final revele">
+    <h2>Votre commerce mérite<br>mieux qu'une page Facebook.</h2>
+    <p>Envoyez-moi le nom de votre établissement : je vous prépare une démo gratuite à votre enseigne, et on en parle autour d'un café.</p>
+    <div class="boutons" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn-hero plein" href="#" onclick="toast('📱 Numéro WhatsApp à ajouter ici');return false">💬 WhatsApp</a>
+      <a class="btn-hero ligne" href="#" onclick="toast('📸 Lien Instagram à ajouter ici');return false">📸 Instagram</a>
+    </div>
+  </div>
+</section>
+
+<footer class="pied">
+  <b style="color:var(--texte)">SKANEO</b> — studio digital pour les commerces de proximité<br>
+  Site de démonstration · nom, contacts et tarifs personnalisables · © 2026
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   OUTILS
+===================================================== */
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._h);
+  t._h = setTimeout(()=>t.classList.remove('visible'), 2600);
+}
+
+/* révélation au scroll */
+const obs = new IntersectionObserver(entrees=>{
+  entrees.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vu'); obs.unobserve(e.target); } });
+},{threshold:.12});
+document.querySelectorAll('.revele').forEach(el=>obs.observe(el));
+
+/* compteurs du hero */
+const obsC = new IntersectionObserver(entrees=>{
+  entrees.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target, fin = +el.dataset.compte;
+    const pre = el.dataset.prefixe||'', suf = el.dataset.suffixe||'';
+    obsC.unobserve(el);
+    if(fin===0){ el.textContent = pre+'0'+suf; return; }
+    const t0 = performance.now();
+    (function anime(t){
+      const p = Math.min(1,(t-t0)/900);
+      el.textContent = pre + Math.round(fin*(1-Math.pow(1-p,3))) + suf;
+      if(p<1) requestAnimationFrame(anime);
+    })(t0);
+  });
+},{threshold:.6});
+document.querySelectorAll('[data-compte]').forEach(el=>obsC.observe(el));
+
+/* bandeau défilant */
+(function(){
+  const mots = ['Snack <b>◆</b>','Restaurant <b>◆</b>','Coiffeur <b>◆</b>','Café <b>◆</b>','Food-truck <b>◆</b>','Boulangerie <b>◆</b>','Barbier <b>◆</b>','Pizzeria <b>◆</b>'];
+  const bloc = mots.map(m=>`<span>${m}</span>`).join('');
+  document.getElementById('piste-marquee').innerHTML = bloc + bloc;
+})();
+
+/* =====================================================
+   GRANDE DÉMO RESTAURANT
+===================================================== */
+const TABLES_JEU = [
+  {id:1, x:24, y:38}, {id:2, x:46, y:32}, {id:3, x:68, y:42}, {id:4, x:35, y:68},
+];
+const POS_PORTE = {x:6, y:66};
+const POS_BAR = {x:86, y:70};
+let scoreJeu = 0;
+const scene = () => document.getElementById('scene');
+
+function pct(el, x, y){ el.style.left = x+'%'; el.style.top = y+'%'; }
+function consigne(num, txt){
+  document.getElementById('num-consigne').textContent = num;
+  document.getElementById('texte-consigne').textContent = txt;
+}
+function montreJeu(){
+  TABLES_JEU.forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'table-jeu libre';
+    b.id = 'tj-'+t.id;
+    b.innerHTML = `<span class="plateau">🪑</span><span class="etiq">TABLE ${t.id}</span>`;
+    pct(b, t.x, t.y);
+    b.onclick = ()=>clicTable(t);
+    scene().appendChild(b);
+  });
+  // le serveur attend au bar
+  const serveur = document.createElement('div');
+  serveur.className = 'perso'; serveur.id = 'serveur'; serveur.textContent = '🤵';
+  pct(serveur, POS_BAR.x, POS_BAR.y - 8);
+  scene().appendChild(serveur);
+}
+function clicTable(t){
+  const bt = document.getElementById('tj-'+t.id);
+  if(!bt.classList.contains('libre')) { toast('Cette table est déjà occupée !'); return; }
+  bt.classList.remove('libre');
+  bt.querySelector('.plateau').textContent = '🪑';
+  // le client entre par la porte
+  const c = document.createElement('div');
+  c.className = 'perso marche'; c.textContent = '🚶';
+  pct(c, POS_PORTE.x, POS_PORTE.y);
+  scene().appendChild(c);
+  consigne('…', `Le client rejoint la table ${t.id}…`);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>pct(c, t.x, t.y - 4)));
+  setTimeout(()=>{
+    c.classList.remove('marche');
+    c.textContent = '🧑';
+    bt.querySelector('.plateau').textContent = '😋';
+    c.remove();
+    // la cloche apparaît
+    const cloche = document.createElement('button');
+    cloche.className = 'cloche-jeu'; cloche.textContent = '🛎️';
+    pct(cloche, t.x + 8, t.y - 12);
+    cloche.onclick = ()=>clicCloche(t, cloche, bt);
+    scene().appendChild(cloche);
+    consigne('2', `Le client de la table ${t.id} a besoin de quelque chose : cliquez sur la cloche !`);
+  }, 1650);
+}
+function clicCloche(t, cloche, bt){
+  cloche.remove();
+  const serveur = document.getElementById('serveur');
+  serveur.classList.add('marche');
+  bulle(t.x + 8, t.y - 14, `Table ${t.id} appelée 🔔`);
+  consigne('…', 'Le serveur a vu l\'appel sur son écran, il arrive…');
+  pct(serveur, t.x + 6, t.y - 2);
+  setTimeout(()=>{
+    serveur.classList.remove('marche');
+    bulle(t.x + 6, t.y - 16, 'À votre service ! ✨');
+    bt.querySelector('.plateau').textContent = '🍽️';
+    scoreJeu++;
+    document.getElementById('score-jeu').textContent = scoreJeu;
+    setTimeout(()=>{
+      serveur.classList.add('marche');
+      pct(serveur, POS_BAR.x, POS_BAR.y - 8);
+      setTimeout(()=>serveur.classList.remove('marche'), 1600);
+      consigne('1', scoreJeu>=TABLES_JEU.length
+        ? 'Toutes les tables sont servies — bravo, le service est bouclé ! ↺ Rejouer ?'
+        : 'Installez un autre client sur une table libre.');
+    }, 1400);
+  }, 1650);
+}
+function bulle(x, y, txt){
+  const b = document.createElement('div');
+  b.className = 'bulle'; b.textContent = txt;
+  pct(b, x, y);
+  scene().appendChild(b);
+  setTimeout(()=>b.remove(), 2200);
+}
+function resetJeu(){
+  scene().querySelectorAll('.table-jeu,.perso,.cloche-jeu,.bulle').forEach(e=>e.remove());
+  scoreJeu = 0;
+  document.getElementById('score-jeu').textContent = 0;
+  consigne('1','Cliquez sur une table libre pour installer un client.');
+  montreJeu();
+}
+montreJeu();
+
+/* =====================================================
+   MINI-DÉMOS DES CARTES
+===================================================== */
+/* snack : burger */
+let pileBurger = 1;
+function ajoutBurger(ing){
+  if(pileBurger >= 7){ toast('Il est déjà bien garni ! Envoyez-le 😄'); return; }
+  const s = document.createElement('span');
+  s.textContent = ing;
+  document.getElementById('burger-pile').appendChild(s);
+  pileBurger++;
+  document.getElementById('ticket-snack').textContent = 'Beau burger ! Encore un ingrédient, ou envoyez ➜';
+}
+function envoyerBurger(){
+  if(pileBurger < 2){ toast('Ajoutez au moins un ingrédient !'); return; }
+  const haut = document.createElement('span');
+  haut.textContent = '🍔';
+  const pile = document.getElementById('burger-pile');
+  pile.innerHTML = '';
+  pile.appendChild(haut);
+  const num = 40 + Math.floor(Math.random()*30);
+  document.getElementById('ticket-snack').textContent = `✅ Commande n° ${num} envoyée en cuisine — prête dans ~12 min`;
+  pileBurger = 1;
+  setTimeout(()=>{
+    pile.innerHTML = '<span>🍞</span>';
+    document.getElementById('ticket-snack').textContent = 'Composez le burger, puis envoyez-le en cuisine ↑';
+  }, 3200);
+}
+/* coiffeur */
+function couper(emoji, nomStyle){
+  const cis = document.getElementById('ciseaux');
+  cis.classList.remove('coupe');
+  void cis.offsetWidth;
+  cis.classList.add('coupe');
+  setTimeout(()=>{
+    document.getElementById('tete').textContent = emoji;
+    const h = 9 + Math.floor(Math.random()*9);
+    const m = ['00','30'][Math.floor(Math.random()*2)];
+    document.getElementById('confirm-coiffeur').textContent = `✅ ${nomStyle} — RDV confirmé demain à ${h}h${m}`;
+  }, 800);
+}
+/* terrasses : mini plan */
+const NOMS_RESA = ['Vous','Sarah','Karim','Lina','Hugo','Nora'];
+let couverts = 6;
+(function(){
+  const plan = document.getElementById('mini-plan');
+  const capa = [2,4,2,6,4,2];
+  capa.forEach((c,i)=>{
+    const t = document.createElement('button');
+    t.className = 'mini-table' + (i===1||i===4 ? ' prise':'');
+    t.style.border = 'none';
+    t.innerHTML = (i===1||i===4 ? '⛱️' : '🪑') + (i===1?'<span class="qui">Sarah ✓</span>':'') + (i===4?'<span class="qui">Karim ✓</span>':'');
+    t.dataset.capa = c;
+    t.onclick = ()=>{
+      if(t.classList.contains('prise')){ toast('Déjà réservée !'); return; }
+      t.classList.add('prise');
+      t.innerHTML = '⛱️<span class="qui">Vous ✓</span>';
+      couverts += c;
+      document.getElementById('compteur-terrasse').textContent = `✅ Table réservée ce soir 20h — ${couverts} couverts au total`;
+    };
+    plan.appendChild(t);
+  });
+})();
+/* appel serveur */
+let nbMiniAppels = 0;
+function miniAppel(){
+  nbMiniAppels++;
+  const liste = document.getElementById('mini-salle-liste');
+  if(nbMiniAppels===1) liste.innerHTML = '';
+  if(nbMiniAppels>3){ toast('Le serveur arrive, promis 😄'); return; }
+  const d = document.createElement('div');
+  d.className = 'appel-ms';
+  d.textContent = `🛎️ Table 12 · à l'instant`;
+  liste.prepend(d);
+  setTimeout(()=>{ d.textContent = '🚶 Table 12 · pris en charge'; }, 1800);
+  setTimeout(()=>{ d.textContent = '✅ Table 12 · servi'; }, 3600);
+}
+</script>
+</body>
+</html>
