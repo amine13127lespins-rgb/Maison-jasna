@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Appel serveur par QR code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --bordeaux:#6e2431;
+  --bordeaux2:#8c3140;
+  --creme:#f8f4ec;
+  --creme2:#ede6d8;
+  --laiton:#c19a3f;
+  --laiton2:#dcb95e;
+  --encre:#2b2125;
+  --gris:#8b8279;
+  --blanc:#fffdf9;
+  --rouge:#c0392b;
+  --ok:#2f9e44;
+  --bleu:#2b6cb0;
+  --ombre:0 10px 30px rgba(43,33,37,.13);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Mulish',system-ui,sans-serif;
+  background:var(--creme);color:var(--encre);
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:1rem}
+.titre-display{font-family:'Yeseva One',Georgia,serif;font-weight:normal;letter-spacing:.01em}
+
+/* ============ INTRO / PRÉSENTATION ============ */
+.intro{
+  position:fixed;inset:0;z-index:200;overflow:auto;
+  background:linear-gradient(165deg,var(--encre) 0%,var(--bordeaux) 100%);
+  color:var(--creme);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 22px;text-align:center;
+}
+.intro .badge{
+  font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;
+  border:1px solid var(--laiton2);color:var(--laiton2);
+  padding:7px 16px;border-radius:999px;margin-bottom:22px;
+}
+.intro h1{font-size:clamp(2.1rem,7vw,3.6rem);line-height:1.12}
+.intro h1 span{color:var(--laiton2)}
+.intro .sous{color:#d8cfc6;max-width:560px;margin:16px auto 34px;font-size:.95rem}
+.avantages{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;max-width:900px;width:100%;margin-bottom:38px;
+}
+.avantage{
+  background:rgba(255,253,249,.06);border:1px solid rgba(255,253,249,.13);
+  border-radius:16px;padding:20px 16px;text-align:left;
+}
+.avantage .ico{font-size:1.6rem;margin-bottom:10px}
+.avantage b{display:block;font-size:.95rem;margin-bottom:5px}
+.avantage p{font-size:.82rem;color:#d8cfc6;line-height:1.5}
+.intro .boutons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-intro{
+  padding:16px 30px;border-radius:14px;border:none;font-size:1rem;font-weight:800;
+  display:inline-flex;align-items:center;gap:10px;transition:transform .15s;
+}
+.btn-intro:hover{transform:translateY(-2px)}
+.btn-intro.plein{background:linear-gradient(135deg,var(--laiton),var(--laiton2));color:var(--encre);box-shadow:0 14px 34px rgba(193,154,63,.4)}
+.btn-intro.ligne{background:transparent;color:var(--creme);border:1px solid rgba(255,253,249,.4)}
+.intro .note{margin-top:30px;font-size:.75rem;color:#a3958c}
+
+/* ============ BARRE DÉMO ============ */
+.barre-demo{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:150;
+  display:flex;align-items:center;gap:4px;
+  background:var(--encre);border-radius:999px;padding:5px;
+  box-shadow:0 14px 40px rgba(43,33,37,.45);
+}
+.barre-demo button{
+  border:none;background:transparent;color:#b9aca1;
+  padding:10px 16px;border-radius:999px;font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:7px;transition:all .2s;white-space:nowrap;
+}
+.barre-demo button.actif{background:linear-gradient(135deg,var(--laiton),var(--laiton2));color:var(--encre)}
+.barre-demo .sep{width:1px;height:22px;background:rgba(255,253,249,.15)}
+.barre-demo .demo-tag{
+  font-size:.6rem;letter-spacing:.2em;color:var(--laiton2);
+  padding:0 12px 0 10px;text-transform:uppercase;
+}
+
+/* ============ VUES ============ */
+.vue{display:none;max-width:1050px;margin:0 auto;padding:0 16px 120px}
+.vue.actif{display:block}
+
+/* ============ VUE CLIENT (après scan) ============ */
+#vue-client{max-width:480px}
+.tel-cadre{padding-top:18px}
+.entete-client{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+.logo-rond{
+  width:50px;height:50px;border-radius:16px;flex:none;font-size:1.4rem;
+  background:linear-gradient(135deg,var(--bordeaux),var(--bordeaux2));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(110,36,49,.35);
+}
+.entete-client h1{font-size:1.35rem;line-height:1.1}
+.entete-client .sous{font-size:.7rem;color:var(--gris);letter-spacing:.14em;text-transform:uppercase}
+.carte-table{
+  background:var(--blanc);border-radius:20px;padding:20px;box-shadow:var(--ombre);
+  text-align:center;margin-bottom:16px;border-top:4px solid var(--laiton);
+}
+.carte-table .vous-etes{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);font-weight:700}
+.carte-table .num{font-family:'Yeseva One',serif;font-size:3.2rem;color:var(--bordeaux);line-height:1.15}
+.carte-table .change{
+  border:none;background:none;color:var(--gris);font-size:.75rem;
+  text-decoration:underline;margin-top:2px;
+}
+.btn-appel{
+  width:100%;border:none;border-radius:22px;padding:34px 20px;
+  background:linear-gradient(150deg,var(--bordeaux),var(--bordeaux2));color:var(--creme);
+  box-shadow:0 18px 44px rgba(110,36,49,.45);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:transform .15s;margin-bottom:14px;position:relative;overflow:hidden;
+}
+.btn-appel:active{transform:scale(.97)}
+.btn-appel .cloche{
+  font-size:3rem;line-height:1;
+  animation:balance 2.4s ease-in-out infinite;
+}
+@keyframes balance{0%,100%{transform:rotate(0)}5%{transform:rotate(14deg)}10%{transform:rotate(-12deg)}15%{transform:rotate(8deg)}20%{transform:rotate(0)}}
+@media(prefers-reduced-motion:reduce){.btn-appel .cloche{animation:none}}
+.btn-appel .lab{font-family:'Yeseva One',serif;font-size:1.5rem}
+.btn-appel .sous-lab{font-size:.8rem;opacity:.8}
+.actions-rapides{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.action-rapide{
+  border:1px solid rgba(139,130,121,.35);background:var(--blanc);
+  border-radius:16px;padding:18px 12px;box-shadow:var(--ombre);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-weight:700;font-size:.9rem;color:var(--encre);transition:transform .15s;
+}
+.action-rapide:active{transform:scale(.96)}
+.action-rapide .ico{font-size:1.7rem}
+.action-rapide small{font-weight:500;font-size:.72rem;color:var(--gris)}
+.note-client{
+  text-align:center;font-size:.75rem;color:var(--gris);line-height:1.7;padding-top:8px;
+}
+
+/* écran d'attente après appel */
+.attente-carte{
+  background:var(--blanc);border-radius:22px;padding:34px 22px;box-shadow:var(--ombre);
+  text-align:center;border-top:4px solid var(--laiton);
+}
+.attente-carte .rond-etat{
+  width:86px;height:86px;border-radius:50%;margin:0 auto 18px;
+  display:flex;align-items:center;justify-content:center;font-size:2.6rem;
+}
+.attente-carte .rond-etat.attente{background:rgba(193,154,63,.15);box-shadow:0 0 0 0 rgba(193,154,63,.35);animation:onde 1.8s infinite}
+@keyframes onde{0%{box-shadow:0 0 0 0 rgba(193,154,63,.35)}100%{box-shadow:0 0 0 26px rgba(193,154,63,0)}}
+@media(prefers-reduced-motion:reduce){.attente-carte .rond-etat.attente{animation:none}}
+.attente-carte .rond-etat.encours{background:rgba(43,108,176,.12)}
+.attente-carte .rond-etat.fait{background:rgba(47,158,68,.12)}
+.attente-carte h2{font-size:1.45rem;margin-bottom:8px}
+.attente-carte .det{font-size:.88rem;color:var(--gris);line-height:1.6;margin-bottom:18px}
+.attente-carte .chrono{
+  font-family:'Yeseva One',serif;font-size:1.1rem;color:var(--bordeaux);
+  margin-bottom:18px;font-variant-numeric:tabular-nums;
+}
+.badge-etat{
+  display:inline-block;font-size:.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.1em;padding:7px 15px;border-radius:999px;margin-bottom:18px;
+}
+.badge-etat.attente{background:rgba(193,154,63,.16);color:#8a6410}
+.badge-etat.encours{background:rgba(43,108,176,.12);color:var(--bleu)}
+.badge-etat.fait{background:rgba(47,158,68,.12);color:var(--ok)}
+.btn-secondaire{
+  width:100%;border:1px solid rgba(139,130,121,.45);border-radius:13px;padding:14px;
+  background:transparent;color:var(--encre);font-size:.9rem;font-weight:700;margin-top:10px;
+}
+.btn-annul{
+  width:100%;border:1px solid rgba(192,57,43,.4);border-radius:13px;padding:13px;
+  background:transparent;color:var(--rouge);font-size:.88rem;font-weight:700;margin-top:10px;
+}
+
+/* ============ VUE SERVICE (personnel) ============ */
+.entete-gerant{display:flex;align-items:center;gap:14px;padding:22px 0 18px;flex-wrap:wrap}
+.entete-gerant h1{font-size:1.45rem}
+.entete-gerant .sous{font-size:.72rem;color:var(--gris);letter-spacing:.14em;text-transform:uppercase}
+.pill-live{
+  margin-left:auto;font-size:.72rem;font-weight:700;color:var(--laiton);
+  background:rgba(193,154,63,.14);padding:7px 13px;border-radius:999px;
+  display:flex;align-items:center;gap:6px;
+}
+.pill-live::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--laiton);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--blanc);border-radius:16px;padding:16px;box-shadow:var(--ombre)}
+.stat .valeur{font-family:'Yeseva One',serif;font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.stat .valeur.rouge{color:var(--bordeaux)}
+.stat .libelle{font-size:.7rem;color:var(--gris);text-transform:uppercase;letter-spacing:.1em;margin-top:7px}
+.filtres-g{display:flex;gap:8px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;flex-wrap:wrap}
+.filtres-g::-webkit-scrollbar{display:none}
+.filtre-g{
+  flex:none;border:1px solid rgba(139,130,121,.35);background:var(--blanc);
+  border-radius:999px;padding:8px 16px;font-size:.82rem;font-weight:600;
+  display:flex;align-items:center;gap:7px;
+}
+.filtre-g.actif{background:var(--encre);color:var(--creme);border-color:var(--encre)}
+.filtre-g .compteur{
+  background:var(--bordeaux);color:#fff;border-radius:999px;
+  min-width:20px;height:20px;font-size:.7rem;display:flex;align-items:center;justify-content:center;padding:0 5px;
+}
+.vide-g{text-align:center;color:var(--gris);font-style:italic;padding:60px 0}
+.carte-appel{
+  background:var(--blanc);border-radius:16px;padding:16px;margin-bottom:12px;
+  box-shadow:var(--ombre);display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  border-left:5px solid var(--laiton);
+}
+.carte-appel.st-attente{border-left-color:var(--bordeaux)}
+.carte-appel.st-attente.urgent{box-shadow:0 0 0 2px rgba(110,36,49,.35), var(--ombre)}
+.carte-appel.st-encours{border-left-color:var(--bleu)}
+.carte-appel.st-fait{border-left-color:#b4aa9e;opacity:.65}
+.carte-appel.st-annule{border-left-color:#b4aa9e;opacity:.45}
+.appel-table{
+  font-family:'Yeseva One',serif;font-size:1.9rem;line-height:1;color:var(--bordeaux);
+  min-width:74px;text-align:center;
+}
+.appel-table small{display:block;font-family:'Mulish',sans-serif;font-size:.62rem;color:var(--gris);letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
+.appel-infos{flex:1;min-width:170px}
+.appel-type{font-weight:800;font-size:1rem}
+.appel-meta{font-size:.78rem;color:var(--gris);font-variant-numeric:tabular-nums}
+.appel-droite{display:flex;flex-direction:column;align-items:flex-end;gap:9px;margin-left:auto}
+.appel-statut{
+  font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  padding:5px 11px;border-radius:999px;
+}
+.appel-statut.attente{background:rgba(110,36,49,.12);color:var(--bordeaux)}
+.appel-statut.encours{background:rgba(43,108,176,.12);color:var(--bleu)}
+.appel-statut.fait{background:var(--creme2);color:var(--gris)}
+.appel-statut.annule{background:var(--creme2);color:var(--gris)}
+.appel-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn-mini{
+  border:none;border-radius:10px;padding:10px 16px;font-size:.83rem;font-weight:800;color:#fff;
+  transition:transform .15s;
+}
+.btn-mini:active{transform:scale(.95)}
+.btn-mini.prendre{background:var(--bleu)}
+.btn-mini.fait{background:var(--ok)}
+.note-bas{text-align:center;font-size:.72rem;color:var(--gris);padding:30px 0 0;line-height:1.7}
+
+/* ============ VUE QR CODES ============ */
+.entete-qr{padding:22px 0 6px}
+.entete-qr h1{font-size:1.45rem}
+.entete-qr p{font-size:.85rem;color:var(--gris);margin-top:6px;max-width:560px}
+.reglage-qr{display:flex;align-items:center;gap:10px;margin:16px 0 20px;flex-wrap:wrap}
+.reglage-qr label{font-size:.85rem;font-weight:700}
+.reglage-qr select{
+  padding:10px 14px;border:1px solid rgba(139,130,121,.4);border-radius:11px;background:var(--blanc);
+}
+.grille-qr{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.chevalet{
+  background:var(--blanc);border-radius:18px;padding:20px 16px;box-shadow:var(--ombre);
+  text-align:center;border:1px solid var(--creme2);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.chevalet .enseigne{font-family:'Yeseva One',serif;font-size:.95rem;color:var(--bordeaux)}
+.chevalet .table-lab{
+  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);font-weight:700;
+}
+.chevalet .table-num{font-family:'Yeseva One',serif;font-size:2rem;line-height:1;color:var(--encre)}
+.chevalet .zone-qr{
+  background:#fff;padding:10px;border-radius:12px;border:1px solid var(--creme2);
+}
+.chevalet .zone-qr img,.chevalet .zone-qr canvas{display:block}
+.chevalet .consigne{font-size:.72rem;color:var(--gris);line-height:1.5}
+.chevalet .consigne b{color:var(--encre)}
+</style>
+</head>
+<body>
+
+<!-- ==================== ÉCRAN DE PRÉSENTATION ==================== -->
+<div class="intro" id="intro">
+  <div class="badge">Maquette de démonstration</div>
+  <h1 class="titre-display">Un scan,<br><span>le serveur arrive.</span></h1>
+  <p class="sous">Un QR code sur chaque table : vos clients appellent le serveur, demandent l'addition ou une carafe d'eau sans lever le bras — et votre équipe voit tout arriver en direct, table par table.</p>
+  <div class="avantages">
+    <div class="avantage">
+      <div class="ico">🙋</div>
+      <b>Fini les bras levés</b>
+      <p>Le client n'attend plus de croiser un regard : il scanne, il appuie, c'est noté avec son numéro de table.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">🔔</div>
+      <b>L'équipe sait où aller</b>
+      <p>Chaque appel s'affiche avec la table, le motif et le temps d'attente. Les plus anciens remontent en premier.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">🧾</div>
+      <b>L'addition sans attendre</b>
+      <p>« Addition » et « carafe d'eau » en un bouton : le serveur arrive préparé, la table se libère plus vite.</p>
+    </div>
+    <div class="avantage">
+      <div class="ico">🖨️</div>
+      <b>Prêt en 5 minutes</b>
+      <p>Un QR code imprimé par table, rien à installer pour le client : ça marche depuis l'appareil photo du téléphone.</p>
+    </div>
+  </div>
+  <div class="boutons">
+    <button class="btn-intro plein" onclick="fermerIntro('client')">📱 Voir côté client</button>
+    <button class="btn-intro ligne" onclick="fermerIntro('service')">🔔 Voir côté équipe</button>
+  </div>
+  <div class="note">Maquette interactive — un appel lancé côté client sonne instantanément côté équipe.<br>L'onglet « QR codes » montre les chevalets à imprimer pour chaque table.</div>
+</div>
+
+<!-- ==================== BARRE DE DÉMO ==================== -->
+<div class="barre-demo">
+  <span class="demo-tag">Démo</span>
+  <div class="sep"></div>
+  <button id="onglet-client" class="actif" onclick="changerVue('client')">📱 Client</button>
+  <button id="onglet-service" onclick="changerVue('service')">🔔 Équipe</button>
+  <button id="onglet-qr" onclick="changerVue('qr')">🖨️ QR codes</button>
+</div>
+
+<!-- ==================== VUE CLIENT (après scan du QR) ==================== -->
+<div class="vue actif" id="vue-client">
+  <div class="tel-cadre">
+    <header class="entete-client">
+      <div class="logo-rond">🍷</div>
+      <div>
+        <h1 class="titre-display">Chez Marcel</h1>
+        <div class="sous">Votre enseigne ici</div>
+      </div>
+    </header>
+    <div id="ecran-client"></div>
+    <div class="note-client">Maquette de démonstration — cette page s'ouvre après le scan<br>du QR code posé sur la table, sans rien installer.</div>
+  </div>
+</div>
+
+<!-- ==================== VUE ÉQUIPE ==================== -->
+<div class="vue" id="vue-service">
+  <header class="entete-gerant">
+    <div class="logo-rond">🔔</div>
+    <div>
+      <h1 class="titre-display">Appels en salle</h1>
+      <div class="sous">Chez Marcel — Service</div>
+    </div>
+    <div class="pill-live">En direct</div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+  <nav class="filtres-g" id="filtres-service"></nav>
+  <div id="liste-appels"></div>
+
+  <div class="note-bas">Dans la version finale : notification sonore et vibration sur le téléphone ou la montre de chaque serveur,<br>attribution par rang de tables et historique complet du service.</div>
+</div>
+
+<!-- ==================== VUE QR CODES ==================== -->
+<div class="vue" id="vue-qr">
+  <header class="entete-qr">
+    <h1 class="titre-display">🖨️ QR codes à imprimer</h1>
+    <p>Un chevalet par table. Le QR code ouvre directement cette page avec le bon numéro de table — le client n'a rien à installer ni à taper.</p>
+  </header>
+  <div class="reglage-qr">
+    <label for="nb-tables">Nombre de tables :</label>
+    <select id="nb-tables" onchange="rendreQr()">
+      <option>6</option><option selected>12</option><option>18</option><option>24</option>
+    </select>
+  </div>
+  <div class="grille-qr" id="grille-qr"></div>
+  <div class="note-bas">Dans la version finale : chevalets aux couleurs de votre établissement, générés en PDF prêts à imprimer.</div>
+</div>
+
+<script>
+/* =====================================================
+   DONNÉES & ÉTAT
+===================================================== */
+const TYPES = {
+  serveur:{ico:'🙋', nom:'Appel serveur'},
+  addition:{ico:'🧾', nom:'Addition demandée'},
+  eau:{ico:'💧', nom:'Carafe d\'eau'},
+};
+const CLE = 'maquette_appel_serveur';
+let tableClient = 7;
+let dernierAppel = null;
+let filtreS = 'actifs';
+
+function chargerAppels(){ try{ return JSON.parse(localStorage.getItem(CLE)) || null }catch(e){ return null } }
+function sauverAppels(l){ try{ localStorage.setItem(CLE, JSON.stringify(l)) }catch(e){} }
+
+function initDemo(){
+  // numéro de table depuis le QR scanné : appel-serveur.html?table=7
+  try{
+    const p = new URLSearchParams(location.search).get('table');
+    if(p && +p>=1 && +p<=99) tableClient = +p;
+  }catch(e){}
+  if(chargerAppels()) return;
+  const mtn = Date.now();
+  sauverAppels([
+    {id:1, table:12, type:'serveur', statut:'attente', ts:mtn-4*60000, tsPris:null, tsFait:null},
+    {id:2, table:3, type:'addition', statut:'encours', ts:mtn-6*60000, tsPris:mtn-5*60000, tsFait:null},
+    {id:3, table:8, type:'eau', statut:'fait', ts:mtn-22*60000, tsPris:mtn-21*60000, tsFait:mtn-20*60000},
+    {id:4, table:5, type:'serveur', statut:'fait', ts:mtn-35*60000, tsPris:mtn-34*60000, tsFait:mtn-33*60000},
+  ]);
+}
+function ilYA(ts){
+  const s = Math.max(0, Math.floor((Date.now()-ts)/1000));
+  if(s<60) return 'à l\'instant';
+  const m = Math.floor(s/60);
+  if(m<60) return `il y a ${m} min`;
+  return `il y a ${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')}`;
+}
+function chrono(ts){
+  const s = Math.max(0, Math.floor((Date.now()-ts)/1000));
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function fermerIntro(vue){
+  document.getElementById('intro').style.display='none';
+  changerVue(vue);
+}
+function changerVue(vue){
+  ['client','service','qr'].forEach(v=>{
+    document.getElementById('vue-'+v).classList.toggle('actif', v===vue);
+    document.getElementById('onglet-'+v).classList.toggle('actif', v===vue);
+  });
+  if(vue==='client') rendreClient();
+  if(vue==='service') rendreService();
+  if(vue==='qr') rendreQr();
+  window.scrollTo(0,0);
+}
+
+/* =====================================================
+   VUE CLIENT
+===================================================== */
+function appelActifClient(){
+  return (chargerAppels()||[]).find(a=>a.id===dernierAppel && a.statut!=='annule');
+}
+function rendreClient(){
+  const a = appelActifClient();
+  const cible = document.getElementById('ecran-client');
+  if(a && a.statut!=='fait'){
+    const t = TYPES[a.type];
+    const enAttente = a.statut==='attente';
+    cible.innerHTML = `
+      <div class="attente-carte">
+        <div class="rond-etat ${a.statut}">${enAttente?'🔔':'🚶'}</div>
+        <h2 class="titre-display">${enAttente?'C\'est noté !':'On arrive !'}</h2>
+        <div class="badge-etat ${a.statut}">${enAttente?'Demande envoyée':'Un serveur arrive'}</div>
+        <div class="det">
+          ${t.ico} ${t.nom} — <b>table ${a.table}</b><br>
+          ${enAttente?'Votre demande est affichée en salle.':'Votre demande a été prise en charge.'}
+        </div>
+        <div class="chrono">⏱ ${chrono(a.ts)}</div>
+        ${enAttente?`<button class="btn-annul" onclick="annulerAppel()">Finalement non merci, annuler</button>`:''}
+        <button class="btn-secondaire" onclick="dernierAppel=null;rendreClient()">← Retour</button>
+      </div>`;
+    return;
+  }
+  if(a && a.statut==='fait'){
+    cible.innerHTML = `
+      <div class="attente-carte">
+        <div class="rond-etat fait">✅</div>
+        <h2 class="titre-display">Le serveur est passé</h2>
+        <div class="badge-etat fait">Demande traitée</div>
+        <div class="det">Besoin d'autre chose ?<br>Appelez-nous quand vous voulez.</div>
+        <button class="btn-secondaire" onclick="dernierAppel=null;rendreClient()">← Retour</button>
+      </div>`;
+    return;
+  }
+  cible.innerHTML = `
+    <div class="carte-table">
+      <div class="vous-etes">Vous êtes à la</div>
+      <div class="num">Table ${tableClient}</div>
+      <button class="change" onclick="changerTable()">changer de table (démo)</button>
+    </div>
+    <button class="btn-appel" onclick="lancerAppel('serveur')">
+      <span class="cloche">🛎️</span>
+      <span class="lab">Appeler le serveur</span>
+      <span class="sous-lab">Quelqu'un vient à votre table</span>
+    </button>
+    <div class="actions-rapides">
+      <button class="action-rapide" onclick="lancerAppel('addition')">
+        <span class="ico">🧾</span>L'addition<small>s'il vous plaît</small>
+      </button>
+      <button class="action-rapide" onclick="lancerAppel('eau')">
+        <span class="ico">💧</span>Carafe d'eau<small>bien fraîche</small>
+      </button>
+    </div>`;
+}
+function changerTable(){
+  const n = prompt('Numéro de table (démo) :', tableClient);
+  if(n && +n>=1 && +n<=99){ tableClient = +n; rendreClient(); }
+}
+function lancerAppel(type){
+  const liste = chargerAppels() || [];
+  // une seule demande active par table
+  const deja = liste.find(a=>a.table===tableClient && ['attente','encours'].includes(a.statut));
+  if(deja){ dernierAppel = deja.id; rendreClient(); return; }
+  const id = liste.reduce((m,a)=>Math.max(m,a.id),0) + 1;
+  liste.unshift({id, table:tableClient, type, statut:'attente', ts:Date.now(), tsPris:null, tsFait:null});
+  sauverAppels(liste);
+  dernierAppel = id;
+  rendreClient();
+}
+function annulerAppel(){
+  const liste = chargerAppels() || [];
+  const a = liste.find(x=>x.id===dernierAppel);
+  if(a && a.statut==='attente'){ a.statut='annule'; sauverAppels(liste); }
+  dernierAppel = null;
+  rendreClient();
+}
+
+/* =====================================================
+   VUE ÉQUIPE
+===================================================== */
+function rendreService(){
+  const liste = chargerAppels() || [];
+  const attente = liste.filter(a=>a.statut==='attente');
+  const encours = liste.filter(a=>a.statut==='encours');
+  const faits = liste.filter(a=>a.statut==='fait');
+  const reponses = faits.filter(a=>a.tsPris);
+  const tempsMoyen = reponses.length
+    ? Math.round(reponses.reduce((s,a)=>s+(a.tsPris-a.ts),0)/reponses.length/1000)
+    : null;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="valeur rouge">${attente.length}</div><div class="libelle">En attente</div></div>
+    <div class="stat"><div class="valeur">${encours.length}</div><div class="libelle">Pris en charge</div></div>
+    <div class="stat"><div class="valeur">${faits.length}</div><div class="libelle">Traités aujourd'hui</div></div>
+    <div class="stat"><div class="valeur">${tempsMoyen!=null?Math.floor(tempsMoyen/60)+':'+String(tempsMoyen%60).padStart(2,'0'):'—'}</div><div class="libelle">Réponse moyenne</div></div>`;
+  const filtres = [
+    ['actifs','À traiter'],['attente','En attente'],['encours','Pris en charge'],['fait','Traités'],['tous','Tous'],
+  ];
+  const nbActifs = attente.length + encours.length;
+  document.getElementById('filtres-service').innerHTML = filtres.map(([id,nom])=>
+    `<button class="filtre-g ${filtreS===id?'actif':''}" onclick="filtreS='${id}';rendreService()">
+      ${nom}${id==='actifs'&&nbActifs?`<span class="compteur">${nbActifs}</span>`:''}</button>`).join('');
+  let visibles = liste.filter(a=>{
+    if(filtreS==='tous') return true;
+    if(filtreS==='actifs') return ['attente','encours'].includes(a.statut);
+    return a.statut===filtreS;
+  });
+  // les appels en attente les plus anciens d'abord, puis pris en charge, puis le reste
+  const poids = {attente:0, encours:1, fait:2, annule:3};
+  visibles.sort((a,b)=> poids[a.statut]-poids[b.statut] || a.ts-b.ts);
+  document.getElementById('liste-appels').innerHTML = visibles.length
+    ? visibles.map(carteAppel).join('')
+    : `<div class="vide-g">Aucun appel ici.<br>Lancez un appel côté client pour voir la salle s'animer ✨</div>`;
+}
+function carteAppel(a){
+  const t = TYPES[a.type];
+  const urgent = a.statut==='attente' && (Date.now()-a.ts) > 3*60000;
+  let actions = '';
+  if(a.statut==='attente'){
+    actions = `<button class="btn-mini prendre" onclick="statutAppel(${a.id},'encours')">🚶 Je m'en occupe</button>`;
+  } else if(a.statut==='encours'){
+    actions = `<button class="btn-mini fait" onclick="statutAppel(${a.id},'fait')">✓ Traité</button>`;
+  }
+  const etat = {attente:'En attente', encours:'Pris en charge', fait:'Traité', annule:'Annulé par le client'}[a.statut];
+  return `<div class="carte-appel st-${a.statut} ${urgent?'urgent':''}">
+    <div class="appel-table"><small>Table</small>${a.table}</div>
+    <div class="appel-infos">
+      <div class="appel-type">${t.ico} ${t.nom}${urgent?' ⚠️':''}</div>
+      <div class="appel-meta">${ilYA(a.ts)}${a.tsPris?` · pris en ${chrono2(a.tsPris-a.ts)}`:''}</div>
+    </div>
+    <div class="appel-droite">
+      <span class="appel-statut ${a.statut}">${etat}</span>
+      <div class="appel-actions">${actions}</div>
+    </div>
+  </div>`;
+}
+function chrono2(ms){
+  const s = Math.max(0, Math.floor(ms/1000));
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+function statutAppel(id, statut){
+  const liste = chargerAppels() || [];
+  const a = liste.find(x=>x.id===id);
+  if(a){
+    a.statut = statut;
+    if(statut==='encours' && !a.tsPris) a.tsPris = Date.now();
+    if(statut==='fait' && !a.tsFait){ a.tsFait = Date.now(); if(!a.tsPris) a.tsPris = a.tsFait; }
+    sauverAppels(liste);
+    rendreService();
+  }
+}
+
+/* =====================================================
+   VUE QR CODES
+===================================================== */
+function urlTable(n){
+  const base = location.origin + location.pathname;
+  return base + '?table=' + n;
+}
+function rendreQr(){
+  const nb = +document.getElementById('nb-tables').value;
+  const grille = document.getElementById('grille-qr');
+  grille.innerHTML = '';
+  for(let n=1;n<=nb;n++){
+    const chev = document.createElement('div');
+    chev.className = 'chevalet';
+    chev.innerHTML = `
+      <div class="enseigne">🍷 Chez Marcel</div>
+      <div class="table-lab">Table</div>
+      <div class="table-num">${n}</div>
+      <div class="zone-qr" id="qr-${n}"></div>
+      <div class="consigne"><b>Scannez-moi</b> pour appeler le serveur,<br>demander l'addition ou une carafe d'eau.</div>`;
+    grille.appendChild(chev);
+  }
+  if(typeof QRCode !== 'undefined'){
+    for(let n=1;n<=nb;n++){
+      new QRCode(document.getElementById('qr-'+n), {
+        text:urlTable(n), width:110, height:110,
+        colorDark:'#2b2125', colorLight:'#ffffff',
+      });
+    }
+  } else {
+    for(let n=1;n<=nb;n++){
+      document.getElementById('qr-'+n).innerHTML =
+        '<div style="width:110px;height:110px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#8b8279;text-align:center">QR code<br>(aperçu)</div>';
+    }
+  }
+}
+
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
+initDemo();
+rendreClient();
+// rafraîchit les chronos et l'état ("le serveur arrive") toutes les 5 s
+setInterval(()=>{
+  if(document.getElementById('vue-client').classList.contains('actif') && dernierAppel) rendreClient();
+  if(document.getElementById('vue-service').classList.contains('actif')) rendreService();
+}, 5000);
+</script>
+</body>
+</html>
